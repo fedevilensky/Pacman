@@ -50,3 +50,6 @@ TagManager:
   - name: Characters
     uniqueID: 372421455
     locked: 0
+  - name: Lights
+    uniqueID: 4150833943
+    locked: 0
