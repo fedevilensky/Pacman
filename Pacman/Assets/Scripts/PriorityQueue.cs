@@ -18,7 +18,7 @@ public abstract class PriorityQueue<T> where T:IComparable {
 	
 	// PRE: El elemento e pertenece a la cola.
 	// POS: Retorna una tupla que contiene al elemento e y su prioridad.
-	public abstract ElementAndPriority<T> ObtenerElementoYPrioridad( T  e);
+	public abstract ObjectAndPriority<T> ObtenerElementoYPrioridad( T  e);
 
 	// PRE: -
 	// POS: Retorna el largo de la cola de prioridad
