@@ -7,7 +7,15 @@ public class ImplementedPriorityQueue<T> : PriorityQueue<T> where T : IComparabl
 {
     private ObjectAndPriority<T>[] heap;
     private int size;
-    private Hashtable itemToPosMap = new Hashtable();
+    private Hashtable itemToPosMap;
+
+    public ImplementedPriorityQueue(IEqualityComparer comparer)
+    {
+        heap = new ObjectAndPriority<T>[150];
+        size = 0;
+        itemToPosMap = new Hashtable(comparer);
+
+    }
 
     public override void CambiarPrioridad(T e, int p)
     {
@@ -21,11 +29,11 @@ public class ImplementedPriorityQueue<T> : PriorityQueue<T> where T : IComparabl
 
     public override void EliminarElemento(T e)
     {
-        int pos =(int) itemToPosMap[e];
+        int pos = (int)itemToPosMap[e];
         itemToPosMap.Remove(e);
         heap[pos] = heap[size];
         size--;
-        if(size >0 && pos <= size)
+        if (size > 0 && pos <= size)
         {
             itemToPosMap[heap[pos].item] = pos;
             Hundir(pos);
@@ -37,6 +45,7 @@ public class ImplementedPriorityQueue<T> : PriorityQueue<T> where T : IComparabl
         T ret = heap[1].item;
         heap[1] = heap[size];
         heap[size] = heap[0];
+        size--;
         itemToPosMap.Remove(ret);
 
         if (size > 0)
@@ -56,16 +65,16 @@ public class ImplementedPriorityQueue<T> : PriorityQueue<T> where T : IComparabl
 
     public override bool EstaVacia()
     {
-        return size > 0;
+        return size == 0;
     }
 
     public override void InsertarConPrioridad(T e, int p)
     {
         size++;
-        if(size > heap.Length)
+        if (size >= heap.Length)
         {
             ObjectAndPriority<T>[] aux = new ObjectAndPriority<T>[heap.Length * 2];
-            for(int i = 1; i < heap.Length; i++)
+            for (int i = 1; i < heap.Length; i++)
             {
                 aux[i] = heap[i];
             }
@@ -109,11 +118,19 @@ public class ImplementedPriorityQueue<T> : PriorityQueue<T> where T : IComparabl
     {
         if (!NoTieneHijos(pos))
         {
-            int hijoMayor = HijoMayor(pos);
-            if ((heap[hijoMayor].priority > heap[pos].priority))
+            int hijo;
+            if (HijoMayor(pos) <= size)
             {
-                IntercambiarPosicion(pos, hijoMayor);
-                Hundir(hijoMayor);
+                hijo = HijoMayor(pos);
+            }
+            else
+            {
+                hijo = HijoMenor(pos);
+            }
+            if ((heap[hijo].priority > heap[pos].priority))
+            {
+                IntercambiarPosicion(pos, hijo);
+                Hundir(hijo);
             }
         }
     }
@@ -160,7 +177,7 @@ public class ImplementedPriorityQueue<T> : PriorityQueue<T> where T : IComparabl
         heap[pos1] = t2;
 
         itemToPosMap[t1] = pos2;
-        itemToPosMap[t2.item] =  pos1;
+        itemToPosMap[t2.item] = pos1;
     }
 
 }

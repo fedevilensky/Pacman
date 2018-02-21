@@ -1,23 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class TilemapManager : MonoBehaviour
+public class TilemapManager
 {
-    public Tilemap wallMap;
     [HideInInspector] public bool[,] booleanMap;
-    public static TilemapManager instance;
-
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        } else if (instance != this)
-        {
-            Destroy(gameObject);
-        }
-        CreateMap();
-    }
+    
 
     struct celda
     {
@@ -25,7 +12,7 @@ public class TilemapManager : MonoBehaviour
         bool conocido;
     }
 
-    void CreateMap()
+    public void CreateMap(Tilemap wallMap)
     {
         BoundsInt bounds = wallMap.cellBounds;
         booleanMap = new bool[bounds.size.x,bounds.size.y];

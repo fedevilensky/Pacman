@@ -21,4 +21,5 @@ public class Player : MovingObject {
 
         rb2D.velocity = new Vector2(xVelocity, yVelocity);
     }
+    
 }
