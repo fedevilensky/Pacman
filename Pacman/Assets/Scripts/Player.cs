@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MovingObject {
-    
 	
 	// Update is called once per frame
-	void FixedUpdate () {
+	void FixedUpdate ()
+    {
+
         float movementX = Input.GetAxis("Horizontal");
         float movementY = Input.GetAxis("Vertical");
         Vector2 movement = new Vector2(movementX, movementY);
@@ -21,5 +22,6 @@ public class Player : MovingObject {
 
         rb2D.velocity = new Vector2(xVelocity, yVelocity);
     }
+
     
 }

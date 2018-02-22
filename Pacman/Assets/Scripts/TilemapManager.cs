@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 public class TilemapManager
 {
     [HideInInspector] public bool[,] booleanMap;
-    
+
 
     struct celda
     {
