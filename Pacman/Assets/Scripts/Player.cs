@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MovingObject {
-	
-	// Update is called once per frame
-	void FixedUpdate ()
+
+
+    // Update is called once per frame
+    void FixedUpdate ()
     {
 
         float movementX = Input.GetAxis("Horizontal");
