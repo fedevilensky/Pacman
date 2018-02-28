@@ -37,7 +37,7 @@ public class Player : MovingObject
             //lightSize start
 
             float scale = gunTimeLeft * (maxLightingScale - lightingScale.x) / gunDuration + lightingScale.x;
-            
+
             lighting.transform.localScale = new Vector3(scale, scale, 1);
 
             //lightSize end
@@ -90,6 +90,6 @@ public class Player : MovingObject
         //lighting.SetActive(false);
         gun.SetActive(true);
 
-        GameManager.instance.playerHasGun= true;
+        GameManager.instance.playerHasGun = true;
     }
 }

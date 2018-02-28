@@ -29,7 +29,7 @@ public class LightScript : MonoBehaviour
         else
         {
             WhiteLight();
-            
+
         }
 
     }
