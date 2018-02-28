@@ -42,30 +42,40 @@ public class Enemy : MovingObject
         }
     }
 
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (coll.gameObject.tag == "Player")
+        {
+            GameManager.instance.gameOver = true;
+            rb2D.bodyType = RigidbodyType2D.Static;
+        }
+
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
-        Vertex playerPosition = CalcuarPosicion(GameManager.instance.player.transform.position);
-        Vertex myPos = CalcuarPosicion(transform.position);
-        if (lastPlayerPosition == null || !vertexComp.Equals(lastPlayerPosition, playerPosition))
-        {
-
-            lastPlayerPosition = playerPosition;
-            if (!calculatingPath && (lastPosition == null || !vertexComp.Equals(lastPlayerPosition, lastPosition)))
+            Vertex playerPosition = CalcuarPosicion(GameManager.instance.player.transform.position);
+            Vertex myPos = CalcuarPosicion(transform.position);
+            if (lastPlayerPosition == null || !vertexComp.Equals(lastPlayerPosition, playerPosition))
             {
-                if (lastPosition == null)
-                {
-                    lastPosition = myPos;
-                }
-                DijkstraWithQueue();
-            }
-        }
 
-        if (wayToPlayer.Count > 1)
-        {
-            Vector2 movementDirection = GetMovementDirection(myPos);
-            Move(movementDirection);
-        }
+                lastPlayerPosition = playerPosition;
+                if (!calculatingPath && (lastPosition == null || !vertexComp.Equals(lastPlayerPosition, lastPosition)))
+                {
+                    if (lastPosition == null)
+                    {
+                        lastPosition = myPos;
+                    }
+                    DijkstraWithQueue();
+                }
+            }
+
+            if (wayToPlayer.Count > 1)
+            {
+                Vector2 movementDirection = GetMovementDirection(myPos);
+                Move(movementDirection);
+            }
     }
 
     Vector2 GetMovementDirection(Vertex p1)

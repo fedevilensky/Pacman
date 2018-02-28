@@ -166,7 +166,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 3
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -189,7 +189,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 366752501}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.17, y: -0.2, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -11920,8 +11920,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  playerPrefab: {fileID: 1516190754452616, guid: 56140dcec3883c6468f0d35c822c022e,
+  playerPrefab: {fileID: 1123718080609924, guid: fb459a9f9c0814f43b55f7caba3bc98e,
     type: 2}
+  gameOver: 0
   enemy: {fileID: 0}
   enemyPrefab: {fileID: 1799607586723656, guid: 63bae2d34f8af564ba0746d3c28893c2,
     type: 2}
@@ -11929,6 +11930,7 @@ MonoBehaviour:
   waypoints: {fileID: 1595446674}
   camera: {fileID: 1681383607}
   positions: 
+  endGame: {fileID: 1259068592953296, guid: d56f2b39babc12c4fb0177f6f53462c1, type: 2}
 --- !u!4 &1890223925
 Transform:
   m_ObjectHideFlags: 0

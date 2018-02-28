@@ -15,7 +15,14 @@ public abstract class MovingObject : MonoBehaviour {
 
     protected void Move(Vector2 movement)
     {
-        rb2D.velocity = movement*movingSpeed;
+        if (!GameManager.instance.hasEnded)
+        {
+            rb2D.velocity = movement * movingSpeed;
+        }
+        else
+        {
+            rb2D.bodyType = RigidbodyType2D.Static;
+        }
     }
 
 

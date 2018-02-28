@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MovingObject {
-
-
+    
     // Update is called once per frame
     void FixedUpdate ()
     {
-
-        float movementX = Input.GetAxis("Horizontal");
-        float movementY = Input.GetAxis("Vertical");
-        Vector2 movement = new Vector2(movementX, movementY);
-       // StopMoving(movementX, movementY);
-        Move(movement);
+            float movementX = Input.GetAxis("Horizontal");
+            float movementY = Input.GetAxis("Vertical");
+            Vector2 movement = new Vector2(movementX, movementY);
+            // StopMoving(movementX, movementY);
+            Move(movement);
     }
 
     void StopMoving(float x, float y)

@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - EndGame
   layers:
   - Default
   - TransparentFX
@@ -52,4 +53,7 @@ TagManager:
     locked: 0
   - name: Lights
     uniqueID: 4150833943
+    locked: 0
+  - name: EndGame
+    uniqueID: 1709354993
     locked: 0

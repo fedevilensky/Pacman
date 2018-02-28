@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using Cinemachine;
 using System;
@@ -10,6 +11,7 @@ public class GameManager : MonoBehaviour
 
     [HideInInspector] public GameObject player;
     public GameObject playerPrefab;
+    [HideInInspector] public bool gameOver = false;
     [HideInInspector] public GameObject enemy;
     public GameObject enemyPrefab;
     public static GameManager instance;
@@ -17,7 +19,8 @@ public class GameManager : MonoBehaviour
     public Tilemap waypoints;
     [HideInInspector] public TilemapManager tileManager;
     public CinemachineVirtualCamera camera;
-    public String positions = "";
+    public GameObject endGame;
+    [HideInInspector] public bool hasEnded;
 
 
     private List<Vertex> waypointList;
@@ -31,7 +34,6 @@ public class GameManager : MonoBehaviour
             tileManager = new TilemapManager();
             waypointList = new List<Vertex>();
             CreateWaypointList();
-            printSpawns();
             RandomSpawns();
             AssignCamera();
             tileManager.CreateMap(wallMap);
@@ -40,6 +42,15 @@ public class GameManager : MonoBehaviour
         else if (instance != this)
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void Update()
+    {
+        if (gameOver && !hasEnded)
+        {
+            GameOver();
+            hasEnded = true;
         }
     }
 
@@ -101,16 +112,14 @@ public class GameManager : MonoBehaviour
         return spawnPos;
 
     }
+    
 
-    private void printSpawns()
+    private void GameOver()
     {
-        for (int i = 0; i < waypointList.Count; i++)
-        {
-            Vertex v = waypointList[i];
-            Vector3Int vec3 = new Vector3Int(v.x, v.y, 0);
-            Vector3 spawnPos = waypoints.CellToWorld(vec3);
-            positions += "x = " + (int) v.x + " - y = " + (int)v.y+"\n";
-        }
+        Vector3 pos = camera.transform.position;
+        pos.z = 0;
+        endGame = Instantiate(endGame, pos, Quaternion.identity) as GameObject;
+        endGame.transform.parent = camera.transform;
     }
 
 }
