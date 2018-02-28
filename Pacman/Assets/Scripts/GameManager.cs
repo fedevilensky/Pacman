@@ -11,16 +11,24 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public GameObject player;
     public GameObject playerPrefab;
     [HideInInspector] public GameObject enemy;
+    public GameObject gunPrefab;
     public GameObject enemyPrefab;
     public static GameManager instance;
     public Tilemap wallMap;
     public Tilemap waypoints;
     [HideInInspector] public TilemapManager tileManager;
     public CinemachineVirtualCamera camera;
-    public String positions = "";
+    public GameObject gunAppearedText;
+    public float gunSpawnRate = 15;
+    public bool gunIsSpawned = false;
+    [HideInInspector] public bool playerHasGun = false;
+    public float gunTextTimerLimit = 2f;
 
 
     private List<Vertex> waypointList;
+    private float lastGunSpawn;
+    private GameObject gun;
+    private float gunTextTimer;
 
 
     private void Awake()
@@ -31,16 +39,56 @@ public class GameManager : MonoBehaviour
             tileManager = new TilemapManager();
             waypointList = new List<Vertex>();
             CreateWaypointList();
-            printSpawns();
             RandomSpawns();
             AssignCamera();
             tileManager.CreateMap(wallMap);
+            lastGunSpawn = gunSpawnRate;
 
         }
         else if (instance != this)
         {
             Destroy(gameObject);
         }
+    }
+
+    public void DestroyGun()
+    {
+        Destroy(gun);
+    }
+
+    void FixedUpdate()
+    {
+        if (!gunIsSpawned)
+        {
+            gunTextTimer = gunTextTimerLimit;
+            lastGunSpawn -= Time.deltaTime;
+            if (lastGunSpawn < 0)
+            {
+                gunIsSpawned = true;
+
+                lastGunSpawn = gunSpawnRate;
+                SpawnGun();
+            }
+        }
+        else
+        {
+            if (gunTextTimer > 0)
+            {
+                gunAppearedText.SetActive(true);
+                gunTextTimer -= Time.deltaTime;
+            }
+            else
+            {
+                gunAppearedText.SetActive(false);
+            }
+        }
+    }
+
+    private void SpawnGun()
+    {
+
+        int spawnPoint = UnityEngine.Random.Range(0, waypointList.Count);
+        InstantiatePrefab(spawnPoint, out gun, gunPrefab);
     }
 
     private void AssignCamera()
@@ -59,8 +107,8 @@ public class GameManager : MonoBehaviour
                 {
                     Vertex aux = new Vertex
                     {
-                        x = i- tileManager.booleanMap.GetLength(0)/2,
-                        y = j- tileManager.booleanMap.GetLength(1)/2
+                        x = i - tileManager.booleanMap.GetLength(0) / 2,
+                        y = j - tileManager.booleanMap.GetLength(1) / 2
                     };
                     waypointList.Add(aux);
                 }
@@ -102,15 +150,5 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void printSpawns()
-    {
-        for (int i = 0; i < waypointList.Count; i++)
-        {
-            Vertex v = waypointList[i];
-            Vector3Int vec3 = new Vector3Int(v.x, v.y, 0);
-            Vector3 spawnPos = waypoints.CellToWorld(vec3);
-            positions += "x = " + (int) v.x + " - y = " + (int)v.y+"\n";
-        }
-    }
 
 }
