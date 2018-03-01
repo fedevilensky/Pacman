@@ -32,8 +32,8 @@ public class GameManager : MonoBehaviour
     public float restartLevelDelay = 2f;
     public GameObject farPoint;
 
-    
-    private bool loading;
+
+    public bool loading;
     private int level = 1;
     public List<Vertex> waypointList;
     private float lastGunSpawn;
@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        //DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
         StartLevel();
     }
     /*
@@ -67,7 +67,10 @@ public class GameManager : MonoBehaviour
     private void StartLevel()
     {
         loading = true;
-        levelText.text = "Level "+level;
+        //
+        SoundManager.instance.enemies = new GameObject[] { enemy };
+        //
+        levelText.text = "Level " + level;
         camera.Follow = farPoint.transform;
         Invoke("InitGame", restartLevelDelay);
     }
@@ -110,7 +113,7 @@ public class GameManager : MonoBehaviour
             GameOver();
         }
     }
-    
+
     public void DestroyGun()
     {
         Destroy(gun);
@@ -152,7 +155,7 @@ public class GameManager : MonoBehaviour
         int spawnPoint = UnityEngine.Random.Range(0, waypointList.Count);
         InstantiatePrefab(spawnPoint, out gun, gunPrefab);
     }
-    
+
     private void AssignCamera()
     {
         camera.Follow = player.transform;
@@ -211,8 +214,8 @@ public class GameManager : MonoBehaviour
         return spawnPos;
 
     }
-    
-    
+
+
     private void GameOver()
     {
         loading = true;
@@ -230,6 +233,6 @@ public class GameManager : MonoBehaviour
         levelText.text = "Lost at level " + level;
         Invoke("StartLevel", restartLevelDelay);
     }
-    
+
 
 }
