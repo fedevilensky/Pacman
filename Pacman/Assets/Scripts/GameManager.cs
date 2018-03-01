@@ -11,7 +11,6 @@ public class GameManager : MonoBehaviour
 
     [HideInInspector] public GameObject player;
     public GameObject playerPrefab;
-    [HideInInspector] public bool gameOver = false;
     [HideInInspector] public GameObject enemy;
     public GameObject gunPrefab;
     public GameObject enemyPrefab;
@@ -21,18 +20,22 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public TilemapManager tileManager;
     public CinemachineVirtualCamera camera;
     public GameObject endGame;
+    [HideInInspector] public bool gameOver;
     [HideInInspector] public bool hasEnded;
+    public bool gunIsSpawned;
+    [HideInInspector] public bool playerHasGun;
     public GameObject gunAppearedText;
     public float gunSpawnRate = 15;
-    public bool gunIsSpawned = false;
-    [HideInInspector] public bool playerHasGun = false;
     public float gunTextTimerLimit = 2f;
+    public float restartLevelDelay = 2f;
 
 
-    private List<Vertex> waypointList;
+    private int level = 1;
+    public List<Vertex> waypointList;
     private float lastGunSpawn;
     private GameObject gun;
     private float gunTextTimer;
+    private GameObject endGameInstance;
 
 
     private void Awake()
@@ -40,27 +43,58 @@ public class GameManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            tileManager = new TilemapManager();
-            waypointList = new List<Vertex>();
-            CreateWaypointList();
-            RandomSpawns();
-            AssignCamera();
-            tileManager.CreateMap(wallMap);
-            lastGunSpawn = gunSpawnRate;
 
         }
         else if (instance != this)
         {
             Destroy(gameObject);
         }
+
+        //DontDestroyOnLoad(gameObject);
+        InitGame();
     }
-    
+    /*
+    private void OnLevelWasLoaded(int index)
+    {
+        level++;
+        InitGame();
+    }*/
+
+    private void InitGame()
+    {
+        DestroyInstances();
+        ResetBools();
+        tileManager = new TilemapManager();
+        waypointList = new List<Vertex>();
+        CreateWaypointList();
+        RandomSpawns();
+        AssignCamera();
+        tileManager.CreateMap(wallMap);
+        Destroy(endGameInstance);
+        lastGunSpawn = gunSpawnRate;
+    }
+
+    private void ResetBools()
+    {
+        gameOver = false;
+        hasEnded = false;
+        gunIsSpawned = false;
+        playerHasGun = false;
+    }
+
+    private void DestroyInstances()
+    {
+        Destroy(gun);
+        Destroy(enemy);
+        Destroy(player);
+    }
+
     private void Update()
     {
         if (gameOver && !hasEnded)
         {
-            GameOver();
             hasEnded = true;
+            GameOver();
         }
     }
     
@@ -146,11 +180,11 @@ public class GameManager : MonoBehaviour
         //aca poner el spawn del objeto
     }
 
-    private void InstantiatePrefab(int playerSpawn, out GameObject gameObject, GameObject prefab)
+    private void InstantiatePrefab(int spawnPoint, out GameObject thisGameObject, GameObject prefab)
     {
-        Vector3 position = VertexToMapVector(playerSpawn);
-        gameObject = Instantiate(prefab, position, Quaternion.identity) as GameObject;
-        gameObject.transform.position = position;
+        Vector3 position = VertexToMapVector(spawnPoint);
+        thisGameObject = Instantiate(prefab, position, Quaternion.identity) as GameObject;
+        thisGameObject.transform.position = position;
     }
 
     private Vector3 VertexToMapVector(int position)
@@ -168,8 +202,10 @@ public class GameManager : MonoBehaviour
     {
         Vector3 pos = camera.transform.position;
         pos.z = 0;
-        endGame = Instantiate(endGame, pos, Quaternion.identity) as GameObject;
-        endGame.transform.parent = camera.transform;
+        endGameInstance = Instantiate(endGame, pos, Quaternion.identity) as GameObject;
+        endGameInstance.transform.parent = camera.transform;
+        Invoke("InitGame", restartLevelDelay);
     }
+    
 
 }
