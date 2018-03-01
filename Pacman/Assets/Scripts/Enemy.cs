@@ -1,18 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class Enemy : MovingObject
 {
-    public String error = "";
 
     private bool calculatingPath = false;
     private int infinity = -1;
     private Vertex lastPlayerPosition = null;
     private Vertex lastPosition = null;
     private VertexEqualityComparer vertexComp = new VertexEqualityComparer();
-    private Stack<Vertex> wayToPlayer = new Stack<Vertex>();
+    private Stack<Vertex> wayToDestination = new Stack<Vertex>();
+    private HeuristicCostCalculator nullCalculator = new NullHeuristicCostCalculator();
+    private HeuristicCostCalculator distanceCalculator = new ImplementedHeuristicCostCalculator();
+    private Vertex destination;
 
     public class Cell
     {
@@ -55,27 +56,45 @@ public class Enemy : MovingObject
     // Update is called once per frame
     void FixedUpdate()
     {
-            Vertex playerPosition = CalcuarPosicion(GameManager.instance.player.transform.position);
-            Vertex myPos = CalcuarPosicion(transform.position);
-            if (lastPlayerPosition == null || !vertexComp.Equals(lastPlayerPosition, playerPosition))
-            {
+        Vertex playerPosition = CalcuarPosicion(GameManager.instance.player.transform.position);
+        Vertex myPos = CalcuarPosicion(transform.position);
+        if (lastPlayerPosition == null || !vertexComp.Equals(lastPlayerPosition, playerPosition))
+        {
 
-                lastPlayerPosition = playerPosition;
-                if (!calculatingPath && (lastPosition == null || !vertexComp.Equals(lastPlayerPosition, lastPosition)))
+            lastPlayerPosition = playerPosition;
+            if (!calculatingPath && (lastPosition == null || !vertexComp.Equals(lastPlayerPosition, lastPosition)))
+            {
+                if (lastPosition == null)
                 {
-                    if (lastPosition == null)
+                    lastPosition = myPos;
+                }
+                if (GameManager.instance.playerHasGun)
+                {
+                    if (destination == null || wayToDestination.Count < 2)
                     {
-                        lastPosition = myPos;
+                        destination = FindWaypoint();
                     }
-                    DijkstraWithQueue();
+                    AStarWithQueue(distanceCalculator);
+                }
+
+                else
+                {
+                    destination = lastPlayerPosition;
+                    AStarWithQueue(nullCalculator);
                 }
             }
+        }
 
-            if (wayToPlayer.Count > 1)
-            {
-                Vector2 movementDirection = GetMovementDirection(myPos);
-                Move(movementDirection);
-            }
+        if (wayToDestination.Count > 1)
+        {
+            Vector2 movementDirection = GetMovementDirection(myPos);
+            Move(movementDirection);
+        }
+        else if (GameManager.instance.playerHasGun)
+        {
+            lastPlayerPosition = null;
+            destination = null;
+        }
     }
 
     Vector2 GetMovementDirection(Vertex p1)
@@ -83,10 +102,10 @@ public class Enemy : MovingObject
         if (lastPosition == null || !vertexComp.Equals(lastPosition, p1))
         {
             lastPosition = p1;
-            if (wayToPlayer.Count > 1)
-                wayToPlayer.Pop();
+            if (wayToDestination.Count > 1)
+                wayToDestination.Pop();
         }
-        Vertex p2 = wayToPlayer.Peek();
+        Vertex p2 = wayToDestination.Peek();
         int xDirection = (p2.x - p1.x) > 0 ? 1 : ((p2.x - p1.x) < 0 ? -1 : 0);
         int yDirection = (p2.y - p1.y) > 0 ? 1 : ((p2.y - p1.y) < 0 ? -1 : 0);
         return new Vector2(xDirection, yDirection);
@@ -108,7 +127,7 @@ public class Enemy : MovingObject
         return ret;
     }
 
-    private void DijkstraWithQueue()
+    private void AStarWithQueue(HeuristicCostCalculator costCalculator)
     {
         calculatingPath = true;
         bool[,] mat = GameManager.instance.tileManager.booleanMap;
@@ -123,7 +142,7 @@ public class Enemy : MovingObject
         {
             v = cola.EliminarElementoMayorPrioridad();
             evaluados.Add(v);
-            if (v.x == lastPlayerPosition.x && v.y == lastPlayerPosition.y)
+            if (v.x == destination.x && v.y == destination.y)
             {
                 SiguienteMovimiento(camino, v);
                 calculatingPath = false;
@@ -154,7 +173,7 @@ public class Enemy : MovingObject
                                     Cell cV = (Cell)camino[v];
                                     if (cNuevoVertice.cost <= cV.cost)
                                     {
-                                        int nuevoCosto = cV.cost - 1;
+                                        int nuevoCosto = cV.cost - 1 + costCalculator.Calculate(nuevoVertice, lastPlayerPosition);
 
                                         Cell newCell = new Cell
                                         {
@@ -194,21 +213,36 @@ public class Enemy : MovingObject
                 }
             }
         }
-        error = "dijkstra falla";
         calculatingPath = false;
         return;
     }
 
     private void SiguienteMovimiento(Hashtable camino, Vertex fin)
     {
-        wayToPlayer.Clear();
-        wayToPlayer.Push(fin);
+        wayToDestination.Clear();
+        wayToDestination.Push(fin);
         Cell c = (Cell)camino[fin];
         while (camino.Contains(c.previous))
         {
-            wayToPlayer.Push(c.previous);
+            wayToDestination.Push(c.previous);
             c = (Cell)camino[c.previous];
         }
-        //wayToPlayer.Pop();
+    }
+
+    private Vertex FindWaypoint()
+    {
+        Vertex ret = lastPlayerPosition;
+        int max = 0;
+        foreach (Vertex v in GameManager.instance.waypointList)
+        {
+            int newDistance = distanceCalculator.Calculate(v, lastPlayerPosition);
+            if (max < newDistance)
+            {
+                max = newDistance;
+                ret = v;
+            }
+        }
+
+        return ret;
     }
 }

@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
     public float gunTextTimerLimit = 2f;
 
 
-    private List<Vertex> waypointList;
+    public List<Vertex> waypointList;
     private float lastGunSpawn;
     private GameObject gun;
     private float gunTextTimer;
