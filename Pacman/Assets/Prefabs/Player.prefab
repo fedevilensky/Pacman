@@ -9,36 +9,21 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-<<<<<<< HEAD
-  m_RootGameObject: {fileID: 1123718080609924}
-  m_IsPrefabParent: 1
---- !u!1 &1123718080609924
-=======
   m_RootGameObject: {fileID: 1006664160284986}
   m_IsPrefabParent: 1
 --- !u!1 &1006664160284986
->>>>>>> origin/Gun_-_Sprite_and_player
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-<<<<<<< HEAD
-  - component: {fileID: 4914590481927218}
-  - component: {fileID: 212188937918256866}
-  - component: {fileID: 95072023474631502}
-  - component: {fileID: 50372346179524542}
-  - component: {fileID: 114861761370581268}
-  - component: {fileID: 58066117336512154}
-=======
   - component: {fileID: 4388746436983810}
   - component: {fileID: 212263584868814376}
   - component: {fileID: 95414318264098936}
   - component: {fileID: 50634631452819068}
   - component: {fileID: 114386116081915072}
   - component: {fileID: 58846877563434068}
->>>>>>> origin/Gun_-_Sprite_and_player
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -46,23 +31,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-<<<<<<< HEAD
---- !u!1 &1542883265899380
-=======
 --- !u!1 &1019373914505250
->>>>>>> origin/Gun_-_Sprite_and_player
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-<<<<<<< HEAD
-  - component: {fileID: 4180521478135062}
-  - component: {fileID: 212152407031409714}
-  - component: {fileID: 114925103553667942}
-  m_Layer: 0
-=======
   - component: {fileID: 4812599373426194}
   - component: {fileID: 212305728362223704}
   m_Layer: 0
@@ -83,33 +58,17 @@ GameObject:
   - component: {fileID: 212521406000256792}
   - component: {fileID: 114505854628021822}
   m_Layer: 0
->>>>>>> origin/Gun_-_Sprite_and_player
   m_Name: Lighting
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
-<<<<<<< HEAD
---- !u!4 &4180521478135062
-=======
 --- !u!4 &4388746436983810
->>>>>>> origin/Gun_-_Sprite_and_player
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-<<<<<<< HEAD
-  m_GameObject: {fileID: 1542883265899380}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.09, y: 0.11, z: 0}
-  m_LocalScale: {x: 1.8, y: 1.8, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4914590481927218}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4914590481927218
-=======
   m_GameObject: {fileID: 1006664160284986}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.6441379, y: -0.33430701, z: 0}
@@ -121,23 +80,10 @@ Transform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4812599373426194
->>>>>>> origin/Gun_-_Sprite_and_player
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-<<<<<<< HEAD
-  m_GameObject: {fileID: 1123718080609924}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 12.02, y: 10.32, z: 0}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
-  m_Children:
-  - {fileID: 4180521478135062}
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!50 &50372346179524542
-=======
   m_GameObject: {fileID: 1019373914505250}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.06, y: -0.42, z: 0}
@@ -160,17 +106,12 @@ Transform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &50634631452819068
->>>>>>> origin/Gun_-_Sprite_and_player
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-<<<<<<< HEAD
-  m_GameObject: {fileID: 1123718080609924}
-=======
   m_GameObject: {fileID: 1006664160284986}
->>>>>>> origin/Gun_-_Sprite_and_player
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
@@ -184,20 +125,12 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
-<<<<<<< HEAD
---- !u!58 &58066117336512154
-=======
 --- !u!58 &58846877563434068
->>>>>>> origin/Gun_-_Sprite_and_player
 CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-<<<<<<< HEAD
-  m_GameObject: {fileID: 1123718080609924}
-=======
   m_GameObject: {fileID: 1006664160284986}
->>>>>>> origin/Gun_-_Sprite_and_player
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -207,21 +140,13 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -0.05}
   serializedVersion: 2
   m_Radius: 0.43
-<<<<<<< HEAD
---- !u!95 &95072023474631502
-=======
 --- !u!95 &95414318264098936
->>>>>>> origin/Gun_-_Sprite_and_player
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-<<<<<<< HEAD
-  m_GameObject: {fileID: 1123718080609924}
-=======
   m_GameObject: {fileID: 1006664160284986}
->>>>>>> origin/Gun_-_Sprite_and_player
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 73827abd8ccd8d7468936d6ce7ee4fef, type: 2}
@@ -232,45 +157,29 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-<<<<<<< HEAD
---- !u!114 &114861761370581268
-=======
 --- !u!114 &114386116081915072
->>>>>>> origin/Gun_-_Sprite_and_player
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-<<<<<<< HEAD
-  m_GameObject: {fileID: 1123718080609924}
-=======
   m_GameObject: {fileID: 1006664160284986}
->>>>>>> origin/Gun_-_Sprite_and_player
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b6d309c830660e49a2f1c579cac31d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   movingSpeed: 4
-<<<<<<< HEAD
---- !u!114 &114925103553667942
-=======
   gunDuration: 15
   hasGun: 0
   lighting: {fileID: 1028891455218364}
   gun: {fileID: 1019373914505250}
   maxLightingScale: 15
 --- !u!114 &114505854628021822
->>>>>>> origin/Gun_-_Sprite_and_player
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-<<<<<<< HEAD
-  m_GameObject: {fileID: 1542883265899380}
-=======
   m_GameObject: {fileID: 1028891455218364}
->>>>>>> origin/Gun_-_Sprite_and_player
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f6f248d4b0a8c04ebac7b9b5cc5a449, type: 3}
@@ -278,20 +187,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxDistance: 10
   minDistance: 3
-<<<<<<< HEAD
---- !u!212 &212152407031409714
-=======
 --- !u!212 &212263584868814376
->>>>>>> origin/Gun_-_Sprite_and_player
 SpriteRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-<<<<<<< HEAD
-  m_GameObject: {fileID: 1542883265899380}
-=======
   m_GameObject: {fileID: 1006664160284986}
->>>>>>> origin/Gun_-_Sprite_and_player
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -317,11 +218,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -144133353
-  m_SortingLayer: 4
+  m_SortingLayerID: 1896550811
+  m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a3286797e7ecc2c4d949ac138832ce32, type: 3}
-  m_Color: {r: 1, g: 1, b: 0, a: 0.98039216}
+  m_Sprite: {fileID: 21300000, guid: fbe1e7b94bb1a4a099d5bcb15a00141c, type: 3}
+  m_Color: {r: 0.9803922, g: 0.9803922, b: 0.9803922, a: 0.98039216}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -330,9 +231,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-<<<<<<< HEAD
---- !u!212 &212188937918256866
-=======
 --- !u!212 &212305728362223704
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -364,8 +262,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1335287725
-  m_SortingLayer: 0
+  m_SortingLayerID: 214996269
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: dd596e0b33879354faea4ed8d6fd9056, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -378,16 +276,11 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
 --- !u!212 &212521406000256792
->>>>>>> origin/Gun_-_Sprite_and_player
 SpriteRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-<<<<<<< HEAD
-  m_GameObject: {fileID: 1123718080609924}
-=======
   m_GameObject: {fileID: 1028891455218364}
->>>>>>> origin/Gun_-_Sprite_and_player
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -413,11 +306,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 372421455
+  m_SortingLayerID: 1896550811
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: fbe1e7b94bb1a4a099d5bcb15a00141c, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: a3286797e7ecc2c4d949ac138832ce32, type: 3}
+  m_Color: {r: 1, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
