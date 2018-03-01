@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
     public float restartLevelDelay = 2f;
     public GameObject farPoint;
 
-
+    
     private bool loading;
     private int level = 1;
     public List<Vertex> waypointList;
