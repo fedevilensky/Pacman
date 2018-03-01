@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using Cinemachine;
@@ -25,11 +26,14 @@ public class GameManager : MonoBehaviour
     public bool gunIsSpawned;
     [HideInInspector] public bool playerHasGun;
     public GameObject gunAppearedText;
+    public Text levelText;
     public float gunSpawnRate = 15;
     public float gunTextTimerLimit = 2f;
     public float restartLevelDelay = 2f;
+    public GameObject farPoint;
 
 
+    private bool loading;
     private int level = 1;
     public List<Vertex> waypointList;
     private float lastGunSpawn;
@@ -51,7 +55,7 @@ public class GameManager : MonoBehaviour
         }
 
         //DontDestroyOnLoad(gameObject);
-        InitGame();
+        StartLevel();
     }
     /*
     private void OnLevelWasLoaded(int index)
@@ -60,8 +64,17 @@ public class GameManager : MonoBehaviour
         InitGame();
     }*/
 
+    private void StartLevel()
+    {
+        loading = true;
+        levelText.text = "Level "+level;
+        camera.Follow = farPoint.transform;
+        Invoke("InitGame", restartLevelDelay);
+    }
+
     private void InitGame()
     {
+        levelText.text = "";
         DestroyInstances();
         ResetBools();
         tileManager = new TilemapManager();
@@ -70,8 +83,8 @@ public class GameManager : MonoBehaviour
         RandomSpawns();
         AssignCamera();
         tileManager.CreateMap(wallMap);
-        Destroy(endGameInstance);
         lastGunSpawn = gunSpawnRate;
+        loading = false;
     }
 
     private void ResetBools()
@@ -105,6 +118,8 @@ public class GameManager : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (loading)
+            return;
         if (!gunIsSpawned)
         {
             gunTextTimer = gunTextTimerLimit;
@@ -200,11 +215,20 @@ public class GameManager : MonoBehaviour
     
     private void GameOver()
     {
+        loading = true;
         Vector3 pos = camera.transform.position;
         pos.z = 0;
         endGameInstance = Instantiate(endGame, pos, Quaternion.identity) as GameObject;
         endGameInstance.transform.parent = camera.transform;
-        Invoke("InitGame", restartLevelDelay);
+        Invoke("LostAtLevel", restartLevelDelay);
+    }
+
+    private void LostAtLevel()
+    {
+        Destroy(endGameInstance);
+        camera.Follow = farPoint.transform;
+        levelText.text = "Lost at level " + level;
+        Invoke("StartLevel", restartLevelDelay);
     }
     
 

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Player : MovingObject
 {
@@ -25,7 +24,6 @@ public class Player : MovingObject
     // Update is called once per frame
     void FixedUpdate()
     {
-
         float movementX = Input.GetAxis("Horizontal");
         float movementY = Input.GetAxis("Vertical");
         Vector2 movement = new Vector2(movementX, movementY);
