@@ -66,11 +66,6 @@ public class GameManager : MonoBehaviour
     private void StartLevel()
     {
         loading = true;
-<<<<<<< HEAD
-       
-=======
-    
->>>>>>> Killable_Enemy
         levelText.text = "Level " + level;
         camera.Follow = farPoint.transform;
         Invoke("InitGame", restartLevelDelay);
@@ -88,18 +83,11 @@ public class GameManager : MonoBehaviour
         AssignCamera();
         tileManager.CreateMap(wallMap);
         lastGunSpawn = gunSpawnRate;
-<<<<<<< HEAD
-
-        //
         GameObject[] enemies = new GameObject[1];
         enemies[0] = enemy;
         SoundManager.instance.enemies = enemies;
         SoundManager.instance.LoadEnemySound();
-        //
-
-=======
         gunAppearedText.SetActive(false);
->>>>>>> Killable_Enemy
         loading = false;
     }
 

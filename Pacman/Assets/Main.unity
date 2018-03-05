@@ -189,7 +189,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 366752501}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.17, y: -0.2, z: -10}
+  m_LocalPosition: {x: 1.6441379, y: -0.33430701, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -5544,14 +5544,14 @@ MonoBehaviour:
   m_YDamping: 1
   m_ZDamping: 1
   m_ScreenX: 0.5
-  m_ScreenY: 0.49999988
+  m_ScreenY: 0.5
   m_CameraDistance: 10
-  m_DeadZoneWidth: 0.26922673
-  m_DeadZoneHeight: 0.21440673
+  m_DeadZoneWidth: 0.1
+  m_DeadZoneHeight: 0.1
   m_DeadZoneDepth: 0
   m_UnlimitedSoftZone: 0
-  m_SoftZoneWidth: 0.5950215
-  m_SoftZoneHeight: 0.54576236
+  m_SoftZoneWidth: 0.8
+  m_SoftZoneHeight: 0.8
   m_BiasX: 0
   m_BiasY: 0
   m_GroupFramingMode: 2
@@ -12101,7 +12101,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1681383606}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.17, y: -0.2, z: -10}
+  m_LocalPosition: {x: 1.6441379, y: -0.33430701, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 498345833}
@@ -12241,7 +12241,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1877217402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12253,20 +12253,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe153d8edabed574e9245316c75f7382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-<<<<<<< HEAD
-  bgm: {fileID: 1877217403}
+  bgm: {fileID: 0}
   enemies: []
   enemyAudios:
   - {fileID: 8300000, guid: e32ba9231847a5f45a77d2443b16729d, type: 3}
   - {fileID: 8300000, guid: 11b265089d2db39428874a1e728a17de, type: 3}
   maxDistance: 15
   minDistance: 1
-=======
-  bgm: {fileID: 0}
-  enemies: []
-  maxDistance: 0
-  minDistance: 0
->>>>>>> Killable_Enemy
 --- !u!82 &1877217403
 AudioSource:
   m_ObjectHideFlags: 0
@@ -12408,10 +12401,6 @@ MonoBehaviour:
   gunTextTimerLimit: 2
   restartLevelDelay: 2
   farPoint: {fileID: 900959425}
-<<<<<<< HEAD
-=======
-  killRadius: {fileID: 1861795103604662, guid: 63bae2d34f8af564ba0746d3c28893c2, type: 2}
->>>>>>> Killable_Enemy
   loading: 0
 --- !u!4 &1890223925
 Transform:
