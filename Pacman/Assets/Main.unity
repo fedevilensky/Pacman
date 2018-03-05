@@ -12241,7 +12241,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1877217402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12253,6 +12253,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe153d8edabed574e9245316c75f7382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bgm: {fileID: 0}
+  enemies: []
+  maxDistance: 0
+  minDistance: 0
 --- !u!82 &1877217403
 AudioSource:
   m_ObjectHideFlags: 0
@@ -12378,7 +12382,7 @@ MonoBehaviour:
     type: 2}
   enemy: {fileID: 0}
   gunPrefab: {fileID: 1890408608696848, guid: f7bf399e1b3f8154e9f464aa2025dfae, type: 2}
-  enemyPrefab: {fileID: 1799607586723656, guid: 63bae2d34f8af564ba0746d3c28893c2,
+  enemyPrefab: {fileID: 1778189051228532, guid: 63bae2d34f8af564ba0746d3c28893c2,
     type: 2}
   wallMap: {fileID: 905095531}
   waypoints: {fileID: 1595446674}
@@ -12394,6 +12398,8 @@ MonoBehaviour:
   gunTextTimerLimit: 2
   restartLevelDelay: 2
   farPoint: {fileID: 900959425}
+  killRadius: {fileID: 1861795103604662, guid: 63bae2d34f8af564ba0746d3c28893c2, type: 2}
+  loading: 0
 --- !u!4 &1890223925
 Transform:
   m_ObjectHideFlags: 0
