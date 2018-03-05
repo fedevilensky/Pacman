@@ -254,6 +254,7 @@ public class GameManager : MonoBehaviour
         Destroy(endGameInstance);
         camera.Follow = farPoint.transform;
         levelText.text = "Lost at level " + level;
+        level = 1;
         Invoke("StartLevel", restartLevelDelay);
     }
 
