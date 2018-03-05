@@ -12253,6 +12253,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe153d8edabed574e9245316c75f7382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bgm: {fileID: 1877217403}
+  enemies: []
+  enemyAudios:
+  - {fileID: 8300000, guid: e32ba9231847a5f45a77d2443b16729d, type: 3}
+  - {fileID: 8300000, guid: 11b265089d2db39428874a1e728a17de, type: 3}
+  maxDistance: 15
+  minDistance: 1
 --- !u!82 &1877217403
 AudioSource:
   m_ObjectHideFlags: 0
@@ -12394,6 +12401,7 @@ MonoBehaviour:
   gunTextTimerLimit: 2
   restartLevelDelay: 2
   farPoint: {fileID: 900959425}
+  loading: 0
 --- !u!4 &1890223925
 Transform:
   m_ObjectHideFlags: 0

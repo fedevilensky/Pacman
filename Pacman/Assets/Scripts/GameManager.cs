@@ -67,9 +67,7 @@ public class GameManager : MonoBehaviour
     private void StartLevel()
     {
         loading = true;
-        //
-        SoundManager.instance.enemies = new GameObject[] { enemy };
-        //
+       
         levelText.text = "Level " + level;
         camera.Follow = farPoint.transform;
         Invoke("InitGame", restartLevelDelay);
@@ -87,6 +85,14 @@ public class GameManager : MonoBehaviour
         AssignCamera();
         tileManager.CreateMap(wallMap);
         lastGunSpawn = gunSpawnRate;
+
+        //
+        GameObject[] enemies = new GameObject[1];
+        enemies[0] = enemy;
+        SoundManager.instance.enemies = enemies;
+        SoundManager.instance.LoadEnemySound();
+        //
+
         loading = false;
     }
 
