@@ -6,6 +6,7 @@ TagManager:
   tags:
   - EndGame
   - Gun
+  - KillRadius
   layers:
   - Default
   - TransparentFX

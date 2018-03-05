@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     public CinemachineVirtualCamera camera;
     public GameObject endGame;
     [HideInInspector] public bool gameOver;
-    [HideInInspector] public bool hasEnded;
+     public bool hasEnded;
     public bool gunIsSpawned;
     [HideInInspector] public bool playerHasGun;
     public GameObject gunAppearedText;
@@ -31,7 +31,6 @@ public class GameManager : MonoBehaviour
     public float gunTextTimerLimit = 2f;
     public float restartLevelDelay = 2f;
     public GameObject farPoint;
-
 
     public bool loading;
     private int level = 1;
@@ -67,7 +66,11 @@ public class GameManager : MonoBehaviour
     private void StartLevel()
     {
         loading = true;
+<<<<<<< HEAD
        
+=======
+    
+>>>>>>> Killable_Enemy
         levelText.text = "Level " + level;
         camera.Follow = farPoint.transform;
         Invoke("InitGame", restartLevelDelay);
@@ -85,6 +88,7 @@ public class GameManager : MonoBehaviour
         AssignCamera();
         tileManager.CreateMap(wallMap);
         lastGunSpawn = gunSpawnRate;
+<<<<<<< HEAD
 
         //
         GameObject[] enemies = new GameObject[1];
@@ -93,6 +97,9 @@ public class GameManager : MonoBehaviour
         SoundManager.instance.LoadEnemySound();
         //
 
+=======
+        gunAppearedText.SetActive(false);
+>>>>>>> Killable_Enemy
         loading = false;
     }
 
@@ -113,11 +120,23 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (gameOver && !hasEnded)
+        if (!loading)
         {
-            hasEnded = true;
-            GameOver();
+            if (gameOver && !hasEnded)
+            {
+                hasEnded = true;
+                GameOver();
+            }
+            else if (!gameOver && hasEnded)
+            {
+                Victory();
+            }
         }
+    }
+
+    public void EquipGun()
+    {
+        playerHasGun = true;
     }
 
     public void DestroyGun()
@@ -232,11 +251,25 @@ public class GameManager : MonoBehaviour
         Invoke("LostAtLevel", restartLevelDelay);
     }
 
+    private void Victory()
+    {
+        loading = true;
+        Vector3 pos = camera.transform.position;
+        pos.z = 0;
+        camera.Follow = farPoint.transform;
+        levelText.text = "Enemy Killed";
+        level++;
+        hasEnded = false;
+        Invoke("StartLevel", restartLevelDelay);
+    }
+    
+
     private void LostAtLevel()
     {
         Destroy(endGameInstance);
         camera.Follow = farPoint.transform;
         levelText.text = "Lost at level " + level;
+        level = 1;
         Invoke("StartLevel", restartLevelDelay);
     }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Enemy : MovingObject
 {
+    public GameObject killRadius;
 
     private bool calculatingPath = false;
     private int infinity = -1;
@@ -14,6 +15,7 @@ public class Enemy : MovingObject
     private HeuristicCostCalculator nullCalculator = new NullHeuristicCostCalculator();
     private HeuristicCostCalculator distanceCalculator = new ImplementedHeuristicCostCalculator();
     private Vertex destination;
+
 
     public class Cell
     {
@@ -43,46 +45,59 @@ public class Enemy : MovingObject
         }
     }
 
-    void OnCollisionEnter2D(Collision2D coll)
+    private void OnCollisionEnter2D(Collision2D coll)
     {
-        if (coll.gameObject.tag == "Player")
+        if (!GameManager.instance.hasEnded)
         {
-            GameManager.instance.gameOver = true;
-            rb2D.bodyType = RigidbodyType2D.Static;
+            if (coll.gameObject.tag == "Player")
+            {
+                if (!GameManager.instance.playerHasGun)
+                {
+                    GameManager.instance.gameOver = true;
+                }
+                CollisionWithPlayer();
+            }
         }
+    }
 
+    public void CollisionWithPlayer()
+    {
+        rb2D.bodyType = RigidbodyType2D.Static;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (!GameManager.instance.hasEnded) { 
         Vertex playerPosition = CalcuarPosicion(GameManager.instance.player.transform.position);
         Vertex myPos = CalcuarPosicion(transform.position);
-        if (lastPlayerPosition == null || !vertexComp.Equals(lastPlayerPosition, playerPosition))
-        {
-
-            lastPlayerPosition = playerPosition;
-            if (!calculatingPath && (lastPosition == null || !vertexComp.Equals(lastPlayerPosition, lastPosition)))
+            if (lastPlayerPosition == null || !vertexComp.Equals(lastPlayerPosition, playerPosition))
             {
-                if (lastPosition == null)
-                {
-                    lastPosition = myPos;
-                }
-                if (GameManager.instance.playerHasGun)
-                {
-                    if (destination == null || wayToDestination.Count < 2)
-                    {
-                        destination = FindWaypoint();
-                    }
-                    AStarWithQueue(distanceCalculator);
-                }
 
-                else
+                lastPlayerPosition = playerPosition;
+                if (!calculatingPath && (lastPosition == null || !vertexComp.Equals(lastPlayerPosition, lastPosition)))
                 {
-                    destination = lastPlayerPosition;
-                    AStarWithQueue(nullCalculator);
+                    if (lastPosition == null)
+                    {
+                        lastPosition = myPos;
+                    }
+                    if (GameManager.instance.playerHasGun)
+                    {
+                        killRadius.SetActive(true);
+                        if (destination == null || wayToDestination.Count < 2)
+                        {
+                            destination = FindWaypoint();
+                        }
+                        AStarWithQueue(distanceCalculator);
+                    }
+
+                    else
+                    {
+                        killRadius.SetActive(false);
+                        destination = lastPlayerPosition;
+                        AStarWithQueue(nullCalculator);
+                    }
                 }
-            }
         }
 
         if (wayToDestination.Count > 1)
@@ -94,6 +109,7 @@ public class Enemy : MovingObject
         {
             lastPlayerPosition = null;
             destination = null;
+            }
         }
     }
 
