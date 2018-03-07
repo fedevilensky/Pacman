@@ -2,9 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Pathfinding
+{
+    RUNNING_AWAY,
+    CHASING
+}
+
 public class Enemy : MovingObject
 {
     public GameObject killRadius;
+    public const float pathfindingDelay = 1f;
 
     private bool calculatingPath = false;
     private int infinity = -1;
@@ -15,6 +22,9 @@ public class Enemy : MovingObject
     private HeuristicCostCalculator nullCalculator = new NullHeuristicCostCalculator();
     private HeuristicCostCalculator distanceCalculator = new ImplementedHeuristicCostCalculator();
     private Vertex destination;
+    public float timeSinceLastPathfind;
+    public Pathfinding lastPathfind;
+
 
 
     public class Cell
@@ -45,6 +55,12 @@ public class Enemy : MovingObject
         }
     }
 
+    void Awake()
+    {
+        timeSinceLastPathfind = pathfindingDelay;
+        lastPathfind = Pathfinding.RUNNING_AWAY;
+    }
+
     private void OnCollisionEnter2D(Collision2D coll)
     {
         if (!GameManager.instance.hasEnded)
@@ -68,9 +84,11 @@ public class Enemy : MovingObject
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!GameManager.instance.hasEnded) { 
-        Vertex playerPosition = CalcuarPosicion(GameManager.instance.player.transform.position);
-        Vertex myPos = CalcuarPosicion(transform.position);
+        if (!GameManager.instance.hasEnded)
+        {
+            Vertex playerPosition = CalcuarPosicion(GameManager.instance.player.transform.position);
+            Vertex myPos = CalcuarPosicion(transform.position);
+            timeSinceLastPathfind += Time.deltaTime;
             if (lastPlayerPosition == null || !vertexComp.Equals(lastPlayerPosition, playerPosition))
             {
 
@@ -81,34 +99,45 @@ public class Enemy : MovingObject
                     {
                         lastPosition = myPos;
                     }
+
                     if (GameManager.instance.playerHasGun)
                     {
                         killRadius.SetActive(true);
-                        if (destination == null || wayToDestination.Count < 2)
+                        if (!(lastPathfind == Pathfinding.RUNNING_AWAY && timeSinceLastPathfind < pathfindingDelay))
                         {
-                            destination = FindWaypoint();
+                            if (lastPathfind != Pathfinding.RUNNING_AWAY || wayToDestination.Count < 2 || rb2D.velocity == Vector2.zero)
+                            {
+                                destination = FindWaypoint();
+                            }
+                            lastPathfind = Pathfinding.RUNNING_AWAY;
+                            AStarWithQueue(distanceCalculator);
+                            timeSinceLastPathfind = 0f;
                         }
-                        AStarWithQueue(distanceCalculator);
-                    }
 
+                    }
                     else
                     {
                         killRadius.SetActive(false);
-                        destination = lastPlayerPosition;
-                        AStarWithQueue(nullCalculator);
+                        if (!(lastPathfind == Pathfinding.CHASING && timeSinceLastPathfind < pathfindingDelay))
+                        {
+                            lastPathfind = Pathfinding.CHASING;
+                            destination = lastPlayerPosition;
+                            AStarWithQueue(nullCalculator);
+                            timeSinceLastPathfind = 0f;
+                        }
                     }
                 }
-        }
+            }
 
-        if (wayToDestination.Count > 1)
-        {
-            Vector2 movementDirection = GetMovementDirection(myPos);
-            Move(movementDirection);
-        }
-        else if (GameManager.instance.playerHasGun)
-        {
-            lastPlayerPosition = null;
-            destination = null;
+            if (wayToDestination.Count > 1)
+            {
+                Vector2 movementDirection = GetMovementDirection(myPos);
+                Move(movementDirection);
+            }
+            else if (GameManager.instance.playerHasGun)
+            {
+                lastPlayerPosition = null;
+                destination = null;
             }
         }
     }
@@ -251,11 +280,14 @@ public class Enemy : MovingObject
         int max = 0;
         foreach (Vertex v in GameManager.instance.waypointList)
         {
-            int newDistance = distanceCalculator.Calculate(v, lastPlayerPosition);
-            if (max < newDistance)
+            if (destination == null || !vertexComp.Equals(v, destination))
             {
-                max = newDistance;
-                ret = v;
+                int newDistance = distanceCalculator.Calculate(v, lastPlayerPosition);
+                if (max < newDistance)
+                {
+                    max = newDistance;
+                    ret = v;
+                }
             }
         }
 
