@@ -10,6 +10,8 @@ using System;
 public class GameManager : MonoBehaviour
 {
 
+    public GameObject borrarPrefab;
+
     [HideInInspector] public GameObject player;
     public GameObject playerPrefab;
     [HideInInspector] public GameObject enemy;
@@ -22,23 +24,27 @@ public class GameManager : MonoBehaviour
     public CinemachineVirtualCamera camera;
     public GameObject endGame;
     [HideInInspector] public bool gameOver;
-     public bool hasEnded;
-    public bool gunIsSpawned;
-    [HideInInspector] public bool playerHasGun;
+    [HideInInspector]public bool hasEnded;
+    [HideInInspector]public bool gunIsSpawned;
+    [HideInInspector]public bool playerHasGun;
     public GameObject gunAppearedText;
     public Text levelText;
     public float gunSpawnRate = 15;
     public float gunTextTimerLimit = 2f;
     public float restartLevelDelay = 2f;
     public GameObject farPoint;
+    [HideInInspector]public bool loading;
 
-    public bool loading;
+    public String error = "";
+
+
     private int level = 1;
     public List<Vertex> waypointList;
     private float lastGunSpawn;
     private GameObject gun;
     private float gunTextTimer;
     private GameObject endGameInstance;
+    public string boolMapPrint;
 
 
     private void Awake()
@@ -82,7 +88,30 @@ public class GameManager : MonoBehaviour
         RandomSpawns();
         AssignCamera();
         tileManager.CreateMap(wallMap);
-        lastGunSpawn = gunSpawnRate;
+
+
+
+        ///////////////////
+        Destroy(player);
+        Destroy(enemy);
+        Graph aux = tileManager.CreateMapGraph();
+        IEnumerable<Vertex> enumAux = aux.GetEveryVertex();
+
+        foreach (Vertex v in enumAux)
+        {
+            Vector3 spawnPos = new Vector3(v.x, v.y, 0);
+            spawnPos.x += 2.5f;
+            spawnPos.y += 0.5f;
+            spawnPos.x -= tileManager.booleanMap.GetLength(0) / 2;
+            spawnPos.y -= tileManager.booleanMap.GetLength(1) / 2;
+            GameObject gameObject = Instantiate(borrarPrefab, spawnPos, Quaternion.identity) as GameObject;
+            gameObject.transform.position = spawnPos;
+        }
+        ///////////////////
+
+
+
+        lastGunSpawn = 1f;
         GameObject[] enemies = new GameObject[1];
         enemies[0] = enemy;
         SoundManager.instance.enemies = enemies;
@@ -250,7 +279,7 @@ public class GameManager : MonoBehaviour
         hasEnded = false;
         Invoke("StartLevel", restartLevelDelay);
     }
-    
+
 
     private void LostAtLevel()
     {

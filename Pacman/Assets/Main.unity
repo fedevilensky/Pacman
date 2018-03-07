@@ -12380,6 +12380,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60f02ff86b02c084cbf64087ac735dc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  borrarPrefab: {fileID: 1099317755554948, guid: d5b13ec1b17c46d45b497ca86ff2ed11,
+    type: 2}
   player: {fileID: 0}
   playerPrefab: {fileID: 1006664160284986, guid: c7078ab03b9689d4184883148d2f9b89,
     type: 2}
