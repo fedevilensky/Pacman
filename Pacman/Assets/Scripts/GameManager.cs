@@ -82,8 +82,9 @@ public class GameManager : MonoBehaviour
         levelText.text = "";
         DestroyInstances();
         ResetBools();
-        tileManager = new TilemapManager();
         waypointList = new List<Vertex>();
+        tileManager = gameObject.GetComponent<TilemapManager>();
+        tileManager.DrawMap();
         CreateWaypointList();
         RandomSpawns();
         AssignCamera();

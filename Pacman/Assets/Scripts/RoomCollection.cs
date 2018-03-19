@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 public enum TileInfo
@@ -14,9 +15,10 @@ public enum TileInfo
     //error
     ERROR
 }
-public class Maps {
+public class RoomCollection {
+    
 
-    private int[,] room1 = new int[,] {
+    public int[,] room1 = new int[,] {
         {0,2,0,0,2,0,0,2,0,0,2,0,0,2,0 },
         {2,3,1,1,1,1,1,1,1,1,1,1,1,3,2 },
         {0,1,0,0,0,1,0,0,0,1,0,0,0,1,0 },
@@ -110,15 +112,20 @@ public class Maps {
 
 
 
-    public List<TileInfo[,]> roomList = new List<TileInfo[,]>();
+    private List<TileInfo[,]> roomList = new List<TileInfo[,]>();
 
     // Use this for initialization
-    void Start () {
+    public List<TileInfo[,]> GetList () {
+        if(roomList.Count < 1) { 
         roomList.Add(ConvertMatrix(room1));
         roomList.Add(ConvertMatrix(room2));
         roomList.Add(ConvertMatrix(room3));
         roomList.Add(ConvertMatrix(room4));
         roomList.Add(ConvertMatrix(room5));
+        roomList.Add(ConvertMatrix(room6));
+        roomList.Add(ConvertMatrix(room7));
+            }
+        return roomList;
     }
 
     private TileInfo[,] ConvertMatrix(int[,] givenRoom)

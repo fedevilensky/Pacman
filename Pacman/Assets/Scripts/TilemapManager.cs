@@ -1,6 +1,17 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
+using UnityEditor;
+
+/* ORDEN DE ROOMS EN MAPA
+ * 1 2
+ * 3 4
+ * GetLength(0) es y
+ * GetLength(0) es x
+ */
 
 public enum Direction
 {
@@ -11,10 +22,25 @@ public enum Direction
     RIGHT
 }
 
-public class TilemapManager
+public enum Orientation
+{
+    VERTICAL,
+    HORIZONTAL
+}
+
+
+public class TilemapManager : MonoBehaviour
 {
     [HideInInspector] public bool[,] booleanMap;
+    public GameObject[] floorTiles;
+    public GameObject[] wallTiles;
+    public int maxHCons = 2;
+    public int maxVCons = 1;
+    public String impresion = "";
+    public int random;
 
+    private RoomCollection roomCollection;
+    private TileInfo[,] roomMap;
 
     struct celda
     {
@@ -22,8 +48,62 @@ public class TilemapManager
         bool conocido;
     }
 
+    public void DrawMap()
+    {
+        roomCollection = new RoomCollection();
+        List<TileInfo[,]> roomList = roomCollection.GetList();
+
+        TileInfo[,] selectedRoom1 = (TileInfo[,])roomList[Random.Range(0, roomList.Count)].Clone();
+        TileInfo[,] selectedRoom2 = (TileInfo[,])roomList[Random.Range(0, roomList.Count)].Clone();
+        TileInfo[,] selectedRoom3 = (TileInfo[,])roomList[Random.Range(0, roomList.Count)].Clone();
+        TileInfo[,] selectedRoom4 = (TileInfo[,])roomList[Random.Range(0, roomList.Count)].Clone();
+
+        MakeConnections(Orientation.VERTICAL, selectedRoom1, selectedRoom2);
+        MakeConnections(Orientation.VERTICAL, selectedRoom3, selectedRoom4);
+        MakeConnections(Orientation.HORIZONTAL, selectedRoom1, selectedRoom3);/*
+       MakeConnections(Orientation.HORIZONTAL, selectedRoom2, selectedRoom4);
+       */
+        roomMap = new TileInfo[19, 29];
+        for (int y = 0; y < roomMap.GetLength(0) / 2 + 1; y++)
+        {
+            for (int x = 0; x < roomMap.GetLength(1) / 2 + 1; x++)
+            {
+                roomMap[y, x] = selectedRoom1[y, x];
+
+                roomMap[y, x + roomMap.GetLength(1) / 2] = selectedRoom2[y, x];
+
+                roomMap[y + roomMap.GetLength(0) / 2, x] = selectedRoom3[y, x];
+
+                roomMap[y + roomMap.GetLength(0) / 2, x + roomMap.GetLength(1) / 2] = selectedRoom4[y, x];
+
+            }
+        }
+        impresion += "x: " + roomMap.GetLength(1);
+        impresion += "\n";
+        impresion += "y: " + roomMap.GetLength(0);
+        impresion += "\n";
+        Printmap(roomMap);
+        InstantiateMap();
+    }
+
+    private void Printmap(TileInfo[,] map)
+    {
+        for (int i = 0; i < map.GetLength(0); i++)
+        {
+            for (int j = 0; j < map.GetLength(1); j++)
+            {
+                if (map[i, j] == TileInfo.FLOOR || map[i, j] == TileInfo.WAYPOINT)
+                    impresion += "1";
+                else
+                    impresion += "0";
+            }
+            impresion += "\n";
+        }
+    }
+
     public void CreateMap(Tilemap wallMap)
     {
+
         BoundsInt bounds = wallMap.cellBounds;
         booleanMap = new bool[bounds.size.x, bounds.size.y];
 
@@ -45,7 +125,76 @@ public class TilemapManager
         }
     }
 
+    private void InstantiateMap()
+    {
+        booleanMap = new bool[roomMap.GetLength(1), roomMap.GetLength(0)];
+        for (int x = 0; x < roomMap.GetLength(1); x++)
+        {
+            for (int y = 0; y < roomMap.GetLength(0); y++)
+            {
+                booleanMap[x, y] = true;
+                int xCoord = x;
+                int yCoord = y;
+                if (roomMap[y, x] == TileInfo.WALL || roomMap[y, x] == TileInfo.CONNECTION || roomMap[y, x] == TileInfo.ERROR)
+                {
+                    GameObject instance = Instantiate(wallTiles[Random.Range(0, wallTiles.Length)], new Vector3(xCoord - 13.5f, -yCoord + 11.5f, 0f), Quaternion.identity);
+                    instance.transform.SetParent(GameManager.instance.wallMap.transform);
+                    booleanMap[x, y] = false;
+                }
+                else if (roomMap[y, x] == TileInfo.WAYPOINT)
+                {
+                    Vertex aux = new Vertex
+                    {
+                        x = xCoord,
+                        y = yCoord
+                    };
+                    GameManager.instance.waypointList.Add(aux);
+                }
+            }
+        }
+    }
 
+    private void MakeConnections(Orientation orientation, TileInfo[,] room1, TileInfo[,] room2)
+    {
+        int cons = 0;
+        List<int> connections = new List<int>();
+        if (orientation == Orientation.HORIZONTAL)
+        {
+            for (int i = 0; i < room1.GetLength(1); i++)
+            {
+                if (room1[room1.GetLength(0) - 1, i] == TileInfo.CONNECTION && room2[0, i] == TileInfo.CONNECTION)
+                {
+                    connections.Add(i);
+                }
+            }
+            while (cons < maxHCons)
+            {
+                int position = (int)Random.Range(0, connections.Count);
+                room1[room1.GetLength(0) - 1, connections[position]] = TileInfo.FLOOR;
+                room2[0, connections[position]] = TileInfo.FLOOR;
+                cons++;
+                connections.RemoveAt(position);
+            }
+        }
+        else if (orientation == Orientation.VERTICAL)
+        {
+            for (int i = 0; i < room1.GetLength(0); i++)
+            {
+                if (room1[i, room1.GetLength(1) - 1] == TileInfo.CONNECTION && room2[i, 0] == TileInfo.CONNECTION)
+                {
+                    connections.Add(i);
+                }
+            }
+            while (cons < maxVCons)
+            {
+                int position = (int)Random.Range(0, connections.Count);
+                room1[connections[position], room1.GetLength(1) - 1] = TileInfo.FLOOR;
+                room2[connections[position], 0] = TileInfo.FLOOR;
+                cons++;
+                connections.RemoveAt(position);
+            }
+        }
+    }
 
     public Graph CreateMapGraph()
     {
