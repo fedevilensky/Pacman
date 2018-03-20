@@ -78,52 +78,10 @@ public class TilemapManager : MonoBehaviour
 
             }
         }
-        impresion += "x: " + roomMap.GetLength(1);
-        impresion += "\n";
-        impresion += "y: " + roomMap.GetLength(0);
-        impresion += "\n";
-        Printmap(roomMap);
+        
         InstantiateMap();
     }
-
-    private void Printmap(TileInfo[,] map)
-    {
-        for (int i = 0; i < map.GetLength(0); i++)
-        {
-            for (int j = 0; j < map.GetLength(1); j++)
-            {
-                if (map[i, j] == TileInfo.FLOOR || map[i, j] == TileInfo.WAYPOINT)
-                    impresion += "1";
-                else
-                    impresion += "0";
-            }
-            impresion += "\n";
-        }
-    }
-
-    public void CreateMap(Tilemap wallMap)
-    {
-
-        BoundsInt bounds = wallMap.cellBounds;
-        booleanMap = new bool[bounds.size.x, bounds.size.y];
-
-        TileBase[] allTiles = wallMap.GetTilesBlock(bounds);
-        for (int x = 0; x < bounds.size.x; x++)
-        {
-            for (int y = 0; y < bounds.size.y; y++)
-            {
-                TileBase tile = allTiles[x + y * bounds.size.x];
-                if (tile == null)
-                {
-                    booleanMap[x, y] = true;
-                }
-                else
-                {
-                    booleanMap[x, y] = false;
-                }
-            }
-        }
-    }
+    
 
     private void InstantiateMap()
     {
@@ -137,7 +95,7 @@ public class TilemapManager : MonoBehaviour
                 int yCoord = y;
                 if (roomMap[y, x] == TileInfo.WALL || roomMap[y, x] == TileInfo.CONNECTION || roomMap[y, x] == TileInfo.ERROR)
                 {
-                    GameObject instance = Instantiate(wallTiles[Random.Range(0, wallTiles.Length)], new Vector3(xCoord - 13.5f, -yCoord + 11.5f, 0f), Quaternion.identity);
+                    GameObject instance = Instantiate(wallTiles[Random.Range(0, wallTiles.Length)], MapToRealCoords(xCoord, yCoord), Quaternion.identity);
                     instance.transform.SetParent(GameManager.instance.wallMap.transform);
                     booleanMap[x, y] = false;
                 }
@@ -152,6 +110,12 @@ public class TilemapManager : MonoBehaviour
                 }
             }
         }
+        CreateGraph();
+    }
+
+    private Vector3 MapToRealCoords(int x, int y)
+    {
+        return new Vector3(x - 13.5f, -y + 11.5f, 0f);
     }
 
     private void MakeConnections(Orientation orientation, TileInfo[,] room1, TileInfo[,] room2)
@@ -196,35 +160,29 @@ public class TilemapManager : MonoBehaviour
         }
     }
 
-    public Graph CreateMapGraph()
+    private void CreateGraph()
     {
-        Graph ret = new Graph(booleanMap.Length);
+        Graph.Reset(booleanMap.GetLength(0));
 
         int[] movX = new int[] { 1, -1, 0, 0 };
         int[] movY = new int[] { 0, 0, 1, -1 };
-
-        Direction lastDirection = Direction.NO;
-        //Va este
-        //GraphVertex actualVertex = new GraphVertex() {vertex = new Vertex() {x = 6, y = 9 }, Cost =1 };
-
-
-        //hay que borrarlo
-        GraphVertex actualVertex = new GraphVertex() { vertex = new Vertex() { x = 5, y = 8 }, Cost = 1 };
-
-        ////////////
-        GraphVertex lastVertex = actualVertex;
-        ret.AddVertex(actualVertex);
+        
+        Vertex actualVertex = new Vertex() { x = 0, y = 0 };
+        
+        Vertex lastVertex = actualVertex;
+        Graph.AddVertex(actualVertex);
         bool[,] visited = new bool[booleanMap.GetLength(0), booleanMap.GetLength(1)];
-        CreateMapGraphBT(booleanMap, visited, movX, movY, actualVertex.vertex.x, actualVertex.vertex.y,
-            lastDirection, actualVertex, lastVertex, ret);
-
-        return ret;
+        visited[actualVertex.x, actualVertex.y] = true;
+        CreateMapGraphBT( visited, movX, movY, actualVertex.x, actualVertex.y,
+             actualVertex, lastVertex);
+        
     }
 
-    private void CreateMapGraphBT(bool[,] map, bool[,] visited,
+
+    //TERMINAR DE ADAPTAR
+    private void CreateMapGraphBT( bool[,] visited,
         int[] movX, int[] movY, int xPos, int yPos,
-        Direction lastDirection, GraphVertex actualVertex,
-        GraphVertex lastVertex, Graph solution)
+        Vertex actualVertex, Vertex lastVertex)
     {
 
         for (int i = 0; i < movX.Length; i++)
@@ -232,22 +190,21 @@ public class TilemapManager : MonoBehaviour
             int newX = xPos + movX[i];
             int newY = yPos + movY[i];
 
-            if (IsFloor(newX, newY, map))
+            if (IsFloor(newX, newY))
             {
-                map[xPos, yPos] = false;
-
-                Direction newDirection = CalculateDirection(xPos, yPos, newX, newY);
+                bool dirChange = false;
                 int count = 0;
                 for (int j = 0; j < movX.Length; j++)
                 {
-                    if (IsFloor(xPos + movX[j], yPos + movY[j], map))
+                    if (IsFloor(newX + movX[j], newY + movY[j]))
                     {
                         count++;
+                        if*
                     }
                 }
-                if (count != 1 || newDirection != lastDirection)
+                if (count > 1 || newDirection != lastDirection)
                 {
-                    solution.AddVertex(actualVertex);//if vertex already exists does nothing
+                    Graph.AddVertex(actualVertex);//if vertex already exists does nothing
                     solution.AddArc(actualVertex, lastVertex);
                     GameManager.instance.error += "x: " + xPos + " - y: " + yPos + " - count: " + count + " - direccion anterior: " + lastDirection + " - nueva direccion: " + newDirection + "\n";
                     if (!visited[newX, newY])
@@ -303,8 +260,24 @@ public class TilemapManager : MonoBehaviour
 
     }
 
-    private bool IsFloor(int x, int y, bool[,] map)
+    private bool IsFloor(int x, int y)
     {
-        return x >= 0 && y >= 0 && x < map.GetLength(0) && y < map.GetLength(1) && map[x, y];
+        return x >= 0 && y >= 0 && x < booleanMap.GetLength(0) && y < booleanMap.GetLength(1) && booleanMap[x, y];
+    }
+
+
+    private void Printmap(TileInfo[,] map)
+    {
+        for (int i = 0; i < map.GetLength(0); i++)
+        {
+            for (int j = 0; j < map.GetLength(1); j++)
+            {
+                if (map[i, j] == TileInfo.FLOOR || map[i, j] == TileInfo.WAYPOINT)
+                    impresion += "1";
+                else
+                    impresion += "0";
+            }
+            impresion += "\n";
+        }
     }
 }
