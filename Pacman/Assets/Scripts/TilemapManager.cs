@@ -91,32 +91,22 @@ public class TilemapManager : MonoBehaviour
             for (int y = 0; y < roomMap.GetLength(0); y++)
             {
                 booleanMap[x, y] = true;
-                int xCoord = x;
-                int yCoord = y;
                 if (roomMap[y, x] == TileInfo.WALL || roomMap[y, x] == TileInfo.CONNECTION || roomMap[y, x] == TileInfo.ERROR)
                 {
-                    GameObject instance = Instantiate(wallTiles[Random.Range(0, wallTiles.Length)], MapToRealCoords(xCoord, yCoord), Quaternion.identity);
+                    GameObject instance = Instantiate(wallTiles[Random.Range(0, wallTiles.Length)], GameManager.instance.MapToRealCoords(x, y), Quaternion.identity);
                     instance.transform.SetParent(GameManager.instance.wallMap.transform);
                     booleanMap[x, y] = false;
                 }
                 else if (roomMap[y, x] == TileInfo.WAYPOINT)
                 {
-                    Vertex aux = new Vertex
-                    {
-                        x = xCoord,
-                        y = yCoord
-                    };
-                    GameManager.instance.waypointList.Add(aux);
+                    Vector3 waypoint = GameManager.instance.MapToRealCoords(x, y);
+                    GameManager.instance.waypointList.Add(waypoint);
                 }
             }
         }
         CreateGraph();
     }
 
-    private Vector3 MapToRealCoords(int x, int y)
-    {
-        return new Vector3(x - 13.5f, -y + 11.5f, 0f);
-    }
 
     private void MakeConnections(Orientation orientation, TileInfo[,] room1, TileInfo[,] room2)
     {

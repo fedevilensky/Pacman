@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
 
 
     private int level = 1;
-    public List<Vertex> waypointList;
+    public List<Vector3> waypointList;
     private float lastGunSpawn;
     private GameObject gun;
     private float gunTextTimer;
@@ -82,21 +82,18 @@ public class GameManager : MonoBehaviour
         levelText.text = "";
         DestroyInstances();
         ResetBools();
-        waypointList = new List<Vertex>();
-        tileManager = gameObject.GetComponent<TilemapManager>();
+        waypointList = new List<Vector3>();
         tileManager.DrawMap();
         CreateWaypointList();
         RandomSpawns();
         AssignCamera();
-        tileManager.CreateMap(wallMap);
 
 
 
         ///////////////////
         Destroy(player);
         Destroy(enemy);
-        Graph aux = tileManager.CreateMapGraph();
-        IEnumerable<Vertex> enumAux = aux.GetEveryVertex();
+        IEnumerable<Vertex> enumAux = Graph.GetEveryVertex();
 
         foreach (Vertex v in enumAux)
         {
@@ -204,26 +201,6 @@ public class GameManager : MonoBehaviour
         camera.Follow = player.transform;
     }
 
-    private void CreateWaypointList()
-    {
-        tileManager.CreateMap(waypoints);
-        for (int i = 0; i < tileManager.booleanMap.GetLength(0); i++)
-        {
-            for (int j = 0; j < tileManager.booleanMap.GetLength(1); j++)
-            {
-                if (!tileManager.booleanMap[i, j])
-                {
-                    Vertex aux = new Vertex
-                    {
-                        x = i - tileManager.booleanMap.GetLength(0) / 2,
-                        y = j - tileManager.booleanMap.GetLength(1) / 2
-                    };
-                    waypointList.Add(aux);
-                }
-            }
-        }
-    }
-
     private void RandomSpawns()
     {
         //aca instanciamos al jugador
@@ -250,10 +227,7 @@ public class GameManager : MonoBehaviour
 
     private Vector3 VertexToMapVector(int position)
     {
-        Vertex v = waypointList[position];
-        Vector3 spawnPos = new Vector3(v.x, v.y, 0);
-        spawnPos.x += 0.5f;
-        spawnPos.y += 2.5f;
+        Vector3 spawnPos = waypointList[position];
         return spawnPos;
 
     }
@@ -291,5 +265,15 @@ public class GameManager : MonoBehaviour
         Invoke("StartLevel", restartLevelDelay);
     }
 
+
+    public Vector3 MapToRealCoords(int x, int y)
+    {
+        return new Vector3(x - 13.5f, -y + 11.5f, 0f);
+    }
+
+    public Vertex RealCoordsToMap(Vector2 pos)
+    {
+        return new Vertex(){x=(int)(pos.x - 13.5),y=(int)(pos.y - 11.5f)};
+    }
 
 }
