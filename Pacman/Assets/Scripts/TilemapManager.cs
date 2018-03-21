@@ -173,18 +173,15 @@ public class TilemapManager : MonoBehaviour
         Graph.AddVertex(actualVertex);
         bool[,] visited = new bool[booleanMap.GetLength(0), booleanMap.GetLength(1)];
         visited[actualVertex.x, actualVertex.y] = true;
-        CreateMapGraphBT( visited, movX, movY, actualVertex.x, actualVertex.y,
-             actualVertex, lastVertex);
+        CreateMapGraphBT( visited, movX, movY, actualVertex.x, actualVertex.y, lastVertex,1);
         
     }
 
 
-    //TERMINAR DE ADAPTAR
     private void CreateMapGraphBT( bool[,] visited,
         int[] movX, int[] movY, int xPos, int yPos,
-        Vertex actualVertex, Vertex lastVertex)
+        Vertex lastVertex, int lastCost)
     {
-
         for (int i = 0; i < movX.Length; i++)
         {
             int newX = xPos + movX[i];
@@ -192,73 +189,37 @@ public class TilemapManager : MonoBehaviour
 
             if (IsFloor(newX, newY))
             {
-                bool dirChange = false;
-                int count = 0;
-                for (int j = 0; j < movX.Length; j++)
+                Vertex actualVertex = new Vertex() { x = newX, y = newY };
+                if (!visited[newX, newY])
                 {
-                    if (IsFloor(newX + movX[j], newY + movY[j]))
+                    bool dirChange = false;
+                    for (int j = 0; j < movX.Length; j++)
                     {
-                        count++;
-                        if*
+                        int nextX = newX + movX[j];
+                        int nextY = newY + movY[j];
+                        if (IsFloor(nextX, nextY))
+                            if (Math.Abs(nextX - xPos) > 0 && Math.Abs(nextY - yPos) > 0)
+                                dirChange = true;
                     }
+                    visited[newX, newY] = true;
+                    if (dirChange)
+                    {
+                        Graph.AddVertex(actualVertex);
+                        Graph.AddArch(actualVertex, lastVertex, lastCost);
+                        CreateMapGraphBT(visited, movX, movY, actualVertex.x, actualVertex.y, actualVertex, 1);
+                    }
+                    else
+                        CreateMapGraphBT(visited, movX, movY, actualVertex.x, actualVertex.y, lastVertex, lastCost + 1);
                 }
-                if (count > 1 || newDirection != lastDirection)
+                else if (Graph.ContainsVertex(actualVertex))
                 {
-                    Graph.AddVertex(actualVertex);//if vertex already exists does nothing
-                    solution.AddArc(actualVertex, lastVertex);
-                    GameManager.instance.error += "x: " + xPos + " - y: " + yPos + " - count: " + count + " - direccion anterior: " + lastDirection + " - nueva direccion: " + newDirection + "\n";
-                    if (!visited[newX, newY])
-                    {
-                        Vertex newVertex = new Vertex() { x = newX, y = newY };
-                        GraphVertex newGVertex = new GraphVertex() { vertex = newVertex, Cost = 1 };
-
-                        CreateMapGraphBT(map, visited, movX, movY, newX, newY, newDirection, newGVertex, actualVertex, solution);
-                    }
+                    Graph.AddArch(actualVertex, lastVertex, lastCost);
                 }
-                else
-                {
-                    if (!visited[newX, newY])
-                    {
-                        actualVertex.IncrementCost();
-                        actualVertex.vertex = new Vertex() { x = newX, y = newY };
-                        CreateMapGraphBT(map, visited, movX, movY, newX, newY, newDirection, actualVertex, lastVertex, solution);
-
-                        actualVertex.DecrementCost();
-                        actualVertex.vertex = new Vertex() { x = xPos, y = yPos };
-                    }
-                }
-                map[xPos, yPos] = true;
-                visited[newX, newY] = true;
             }
-
         }
     }
+    
 
-    private Direction CalculateDirection(int xPos, int yPos, int newX, int newY)
-    {
-        int x = xPos - newX;
-        int y = yPos - newY;
-        Direction ret = Direction.NO;
-        if (x < 0 && y == 0)
-        {
-            ret = Direction.LEFT;
-        }
-        else if (x > 0 && y == 0)
-        {
-            ret = Direction.RIGHT;
-        }
-        else if (x == 0 && y < 0)
-        {
-            ret = Direction.UP;
-        }
-        else if (x == 0 && y > 0)
-        {
-            ret = Direction.DOWN;
-        }
-
-        return ret;
-
-    }
 
     private bool IsFloor(int x, int y)
     {

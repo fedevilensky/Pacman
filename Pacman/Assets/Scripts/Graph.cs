@@ -95,13 +95,29 @@ public static class Graph
         return aux;
     }
 
+    public static bool ContainsVertex(Vertex v)
+    {
+        return internalRepresentation.Contains(v);
+    }
+
     public static int GetVertexPos(Vertex v)
     {
-        return (int)internalRepresentation[v];
+        if (internalRepresentation.Contains(v))
+            return (int)internalRepresentation[v];
+        else
+            return INF;
     }
     public static Vertex GetVertexPos(int i)
     {
-        return (Vertex)inverseRepresentation[i];
+        if (inverseRepresentation.Contains(i))
+            return (Vertex)inverseRepresentation[i];
+        else
+            return null;
+    }
+
+    public static int[,] GetAdjacencyMatrix()
+    {
+        return adjacencyMatrix;
     }
 
     public static IEnumerable<Vertex> GetAdjacents(Vertex v)
