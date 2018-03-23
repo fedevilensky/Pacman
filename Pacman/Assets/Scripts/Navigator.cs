@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Navigator {
+public class Navigator
+{
     private static int[,] pathMatrix;
 
 
@@ -61,14 +63,14 @@ public class Navigator {
                 if (boolMap[xCord, yCord])
                 {
                     Vertex tryPos = new Vertex() { x = xCord, y = yCord };
-                    while (!Graph.ContainsVertex(tryPos)&&maxCost>thisCost)
+                    while (!Graph.ContainsVertex(tryPos) && maxCost > thisCost)
                     {
                         xCord = pos.x + movX[i];
                         yCord = pos.y + movY[i];
                         tryPos = new Vertex() { x = xCord, y = yCord };
                         thisCost++;
                     }
-                    if(maxCost > thisCost && boolMap[xCord, yCord])
+                    if (maxCost > thisCost && boolMap[xCord, yCord])
                     {
                         nextPos = tryPos;
                         maxCost = thisCost;
@@ -82,6 +84,57 @@ public class Navigator {
     //Aca va el Dikjstra
     private void CalculatePath(Vertex from, Vertex to)
     {
+        int[,] adjacencyMatrix = Graph.GetAdjacencyMatrix();
+        VertexEqualityComparer comp = new VertexEqualityComparer();
+        PriorityQueue<Vertex> queue = new ImplementedPriorityQueue<Vertex>(new VertexEqualityComparerGenericObject());
+        int[] previousStep = new int[Graph.CountVertexes()];
+        int[] dist = new int[Graph.CountVertexes()];
+        for (int i = 0; i < dist.Length; i++)
+        {
+            dist[i] = Graph.INF;
+            previousStep[i] = Graph.INF;
+        }
+        queue.InsertarConPrioridad(from, 0);
 
+        while (!queue.EstaVacia())
+        {
+            Vertex actualVertex = queue.EliminarElementoMayorPrioridad();
+            if (comp.Equals(actualVertex, to))
+            {
+                break;
+            }
+            foreach (Vertex v in Graph.GetAdjacents(actualVertex))
+            {
+                int posV = Graph.GetVertexPos(v);
+                int posActualVertex = Graph.GetVertexPos(actualVertex);
+                if (dist[posV] == Graph.INF
+                    || dist[posV] > dist[posActualVertex] + adjacencyMatrix[posActualVertex, posV])
+                {
+                    dist[posV] = dist[posActualVertex] + adjacencyMatrix[posActualVertex, posV];
+                    queue.InsertarConPrioridad(v, -dist[posV]);
+                    previousStep[posV] = posActualVertex;
+                }
+            }
+        }
+
+        PrintInMatrix(previousStep, from, to);
+    }
+
+    private void PrintInMatrix(int[] previousStep, Vertex from, Vertex to)
+    {
+        int fromPos = Graph.GetVertexPos(from);
+        int toPos = Graph.GetVertexPos(to);
+        int current = toPos;
+        List<int> movesList = new List<int>();
+        while (previousStep[current] != Graph.INF)
+        {
+            pathMatrix[current, fromPos] = previousStep[current];
+            movesList.Add(current);
+            current = previousStep[current];
+        }
+        foreach(int i in movesList)
+        {
+            pathMatrix[pathMatrix[i, fromPos], toPos] = i;
+        }
     }
 }
