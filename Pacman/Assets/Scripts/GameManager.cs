@@ -83,32 +83,13 @@ public class GameManager : MonoBehaviour
         DestroyInstances();
         ResetBools();
         waypointList = new List<Vector3>();
+        tileManager = gameObject.GetComponent<TilemapManager>();
         tileManager.DrawMap();
-        CreateWaypointList();
         RandomSpawns();
         AssignCamera();
 
 
-
-        ///////////////////
-        Destroy(player);
-        Destroy(enemy);
-        IEnumerable<Vertex> enumAux = Graph.GetEveryVertex();
-
-        foreach (Vertex v in enumAux)
-        {
-            Vector3 spawnPos = new Vector3(v.x, v.y, 0);
-            spawnPos.x += 2.5f;
-            spawnPos.y += 0.5f;
-            spawnPos.x -= tileManager.booleanMap.GetLength(0) / 2;
-            spawnPos.y -= tileManager.booleanMap.GetLength(1) / 2;
-            GameObject gameObject = Instantiate(borrarPrefab, spawnPos, Quaternion.identity) as GameObject;
-            gameObject.transform.position = spawnPos;
-        }
-        ///////////////////
-
-
-
+        
         lastGunSpawn = 1f;
         GameObject[] enemies = new GameObject[1];
         enemies[0] = enemy;

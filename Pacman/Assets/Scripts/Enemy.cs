@@ -107,7 +107,7 @@ public class Enemy : MovingObject
                         {
                             if (lastPathfind != Pathfinding.RUNNING_AWAY || wayToDestination.Count < 2 || rb2D.velocity == Vector2.zero)
                             {
-                                destination = FindWaypoint();
+                               // destination = FindWaypoint();
                             }
                             lastPathfind = Pathfinding.RUNNING_AWAY;
                             AStarWithQueue(distanceCalculator);
@@ -273,12 +273,12 @@ public class Enemy : MovingObject
             c = (Cell)camino[c.previous];
         }
     }
-
-    private Vertex FindWaypoint()
+    /*
+    private Vector3 FindWaypoint()
     {
         Vertex ret = lastPlayerPosition;
         int max = 0;
-        foreach (Vertex v in GameManager.instance.waypointList)
+        foreach (Vector3 v in GameManager.instance.waypointList)
         {
             if (destination == null || !vertexComp.Equals(v, destination))
             {
@@ -292,5 +292,5 @@ public class Enemy : MovingObject
         }
 
         return ret;
-    }
+    }*/
 }

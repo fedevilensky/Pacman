@@ -152,19 +152,20 @@ public class TilemapManager : MonoBehaviour
 
     private void CreateGraph()
     {
-        Graph.Reset(booleanMap.GetLength(0));
+        Graph.Reset(booleanMap.GetLength(0)*booleanMap.GetLength(1));
 
         int[] movX = new int[] { 1, -1, 0, 0 };
         int[] movY = new int[] { 0, 0, 1, -1 };
         
-        Vertex actualVertex = new Vertex() { x = 0, y = 0 };
+        Vertex actualVertex = new Vertex() { x = 1, y = 1 };
         
         Vertex lastVertex = actualVertex;
         Graph.AddVertex(actualVertex);
         bool[,] visited = new bool[booleanMap.GetLength(0), booleanMap.GetLength(1)];
         visited[actualVertex.x, actualVertex.y] = true;
+        GameObject insObject = Instantiate(GameManager.instance.borrarPrefab, GameManager.instance.MapToRealCoords(actualVertex.x, actualVertex.y), Quaternion.identity) as GameObject;
         CreateMapGraphBT( visited, movX, movY, actualVertex.x, actualVertex.y, lastVertex,1);
-        
+
     }
 
 
@@ -213,22 +214,32 @@ public class TilemapManager : MonoBehaviour
 
     private bool IsFloor(int x, int y)
     {
-        return x >= 0 && y >= 0 && x < booleanMap.GetLength(0) && y < booleanMap.GetLength(1) && booleanMap[x, y];
+        return x > 0 && y > 0 && x < booleanMap.GetLength(0)-1 && y < booleanMap.GetLength(1)-1 && booleanMap[x, y];
     }
 
 
-    private void Printmap(TileInfo[,] map)
+    private void Printmap(bool[,] map)
     {
         for (int i = 0; i < map.GetLength(0); i++)
         {
             for (int j = 0; j < map.GetLength(1); j++)
             {
-                if (map[i, j] == TileInfo.FLOOR || map[i, j] == TileInfo.WAYPOINT)
+                if (map[i, j] ==true)
                     impresion += "1";
                 else
                     impresion += "0";
             }
             impresion += "\n";
+        }
+    }
+
+    private void PrintGraph()
+    {
+        IEnumerable<Vertex> vertexes = Graph.GetEveryVertex();
+        foreach(Vertex v in vertexes)
+        {
+            GameObject insObject = Instantiate(GameManager.instance.borrarPrefab, GameManager.instance.MapToRealCoords(v.x, v.y), Quaternion.identity) as GameObject;
+
         }
     }
 }
