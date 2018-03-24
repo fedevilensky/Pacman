@@ -212,7 +212,7 @@ public class TilemapManager : MonoBehaviour
     
 
 
-    private bool IsFloor(int x, int y)
+    public bool IsFloor(int x, int y)
     {
         return x > 0 && y > 0 && x < booleanMap.GetLength(0)-1 && y < booleanMap.GetLength(1)-1 && booleanMap[x, y];
     }

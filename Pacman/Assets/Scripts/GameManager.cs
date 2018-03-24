@@ -201,14 +201,16 @@ public class GameManager : MonoBehaviour
 
     private void InstantiatePrefab(int spawnPoint, out GameObject thisGameObject, GameObject prefab)
     {
-        Vector3 position = VertexToMapVector(spawnPoint);
+        Vector3 position = GetSpawn(spawnPoint);
         thisGameObject = Instantiate(prefab, position, Quaternion.identity) as GameObject;
         thisGameObject.transform.position = position;
     }
 
-    private Vector3 VertexToMapVector(int position)
+    private Vector3 GetSpawn(int position)
     {
         Vector3 spawnPos = waypointList[position];
+        //spawnPos.x += 0.5f;
+        //spawnPos.y += 0.5f;
         return spawnPos;
 
     }
@@ -254,7 +256,7 @@ public class GameManager : MonoBehaviour
 
     public Vertex RealCoordsToMap(Vector2 pos)
     {
-        return new Vertex(){x=(int)(pos.x - 13.5),y=(int)(pos.y - 11.5f)};
+        return new Vertex(){x=(int)(pos.x - 13.5),y=(int)(-pos.y + 11.5f)};
     }
 
 }

@@ -11,15 +11,18 @@ public class Navigator
     public Navigator()
     {
         int[,] aux = Graph.GetAdjacencyMatrix();
-        pathMatrix = new int[aux.GetLength(0), aux.GetLength(1)];
-        for (int i = 0; i < aux.GetLength(0); i++)
+        if (pathMatrix == null || pathMatrix.GetLength(0)<aux.GetLength(0))
         {
-            for (int j = 0; j < aux.GetLength(1); j++)
+            pathMatrix = new int[aux.GetLength(0), aux.GetLength(1)];
+            for (int i = 0; i < aux.GetLength(0); i++)
             {
-                pathMatrix[i, j] = Graph.INF;
-                if (aux[i, j] != Graph.INF)
+                for (int j = 0; j < aux.GetLength(1); j++)
                 {
-                    pathMatrix[i, j] = j;
+                    pathMatrix[i, j] = Graph.INF;
+                    if (aux[i, j] != Graph.INF)
+                    {
+                        pathMatrix[i, j] = j;
+                    }
                 }
             }
         }
@@ -52,7 +55,6 @@ public class Navigator
         {
             Vertex nextPos = pos;
             int maxCost = 100;
-            bool[,] boolMap = GameManager.instance.tileManager.booleanMap;
             int[] movX = new int[] { 1, -1, 0, 0 };
             int[] movY = new int[] { 0, 0, 1, -1 };
             for (int i = 0; i < 4; i++)
@@ -60,17 +62,24 @@ public class Navigator
                 int xCord = pos.x + movX[i];
                 int yCord = pos.y + movY[i];
                 int thisCost = 1;
-                if (boolMap[xCord, yCord])
+                if (GameManager.instance.tileManager.IsFloor(xCord,yCord))
                 {
+                    bool foundVer = false;
                     Vertex tryPos = new Vertex() { x = xCord, y = yCord };
-                    while (!Graph.ContainsVertex(tryPos) && maxCost > thisCost)
+                    while (!foundVer && GameManager.instance.tileManager.IsFloor(xCord,yCord) && maxCost > thisCost)
                     {
-                        xCord = pos.x + movX[i];
-                        yCord = pos.y + movY[i];
-                        tryPos = new Vertex() { x = xCord, y = yCord };
-                        thisCost++;
+                        if (!Graph.ContainsVertex(tryPos))
+                        {
+                            tryPos.x += movX[i];
+                            tryPos.y += movY[i];
+                            thisCost++;
+                        }
+                        else
+                        {
+                            foundVer = true;
+                        }
                     }
-                    if (maxCost > thisCost && boolMap[xCord, yCord])
+                    if (foundVer)
                     {
                         nextPos = tryPos;
                         maxCost = thisCost;
@@ -136,5 +145,11 @@ public class Navigator
         {
             pathMatrix[pathMatrix[i, fromPos], toPos] = i;
         }
+    }
+
+
+    private bool IsFloor(int x, int y, bool[,] booleanMap)
+    {
+        return x > 0 && y > 0 && x < booleanMap.GetLength(0) - 1 && y < booleanMap.GetLength(1) - 1 && booleanMap[x, y];
     }
 }
