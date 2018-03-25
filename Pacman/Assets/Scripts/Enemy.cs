@@ -21,11 +21,9 @@ public class Enemy : MovingObject
     private Vertex lastPlayerPosition = null;
     private Vertex lastPosition = null;
     private VertexEqualityComparer vertexComp = new VertexEqualityComparer();
-    private Stack<Vertex> wayToDestination = new Stack<Vertex>();
-    private HeuristicCostCalculator nullCalculator = new NullHeuristicCostCalculator();
-    private HeuristicCostCalculator distanceCalculator = new ImplementedHeuristicCostCalculator();
     private Vertex destination;
     private Navigator navigator;
+    private Vector2 moveDirection;
 
     void Awake()
     {
@@ -62,13 +60,16 @@ public class Enemy : MovingObject
             Vertex playerPosition = GameManager.instance.RealCoordsToMap(GameManager.instance.player.transform.position);
             Vertex myPos = GameManager.instance.RealCoordsToMap(transform.position);
             timeSinceLastPathfind += Time.deltaTime;
-            if(destination == null || !vertexComp.Equals(myPos, destination))
+            if(destination == null || vertexComp.Equals(myPos, destination))
             {
+                log +="estoy en "+ myPos.ToString();
+                log += "\n";
                 destination = navigator.GetNextStep(myPos, playerPosition);
-                log += "nuevo destino: x: " + destination.x + " y: " + destination.y;
-                log += "/n";
+                log += navigator.print;
+                rb2D.velocity = Vector2.zero;
                 ChangeDirection(destination);
             }
+            Move(moveDirection);
 
             //FALTA COMPORTAMIENTO SI VE AL JUGADOR Y COMPORTAMIENTO DE SI EL JUGADOR TIENE EL ARMA
             /*
@@ -130,10 +131,9 @@ public class Enemy : MovingObject
         Vertex myPos = GameManager.instance.RealCoordsToMap(transform.position);
         int xDirection = (to.x - myPos.x) > 0 ? 1 : ((to.x - myPos.x) < 0 ? -1 : 0);
         int yDirection = (myPos.y - to.y) > 0 ? 1 : ((myPos.y - to.y) < 0 ? -1 : 0);
-        Vector2 direction =  new Vector2(xDirection, yDirection);
-        Move(direction);
+        moveDirection =  new Vector2(xDirection, yDirection);
         log += "me muevo: x: " + xDirection + " y: " + yDirection;
-        log += "/n";
+        log += "\n";
     }
     
     

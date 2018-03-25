@@ -34,8 +34,9 @@ public class GameManager : MonoBehaviour
     public float restartLevelDelay = 2f;
     public GameObject farPoint;
     [HideInInspector]public bool loading;
+    public float marginError = 0.1f;
 
-    public String error = "";
+    public String myError = "";
 
 
     private int level = 1;
@@ -83,6 +84,15 @@ public class GameManager : MonoBehaviour
         DestroyInstances();
         ResetBools();
         waypointList = new List<Vector3>();
+        /*
+        TestMap testMap = new TestMap();
+        testMap.CreateGraph();
+        myError += testMap.TestWalk();
+        myError += testMap.TestWalk();
+        myError += testMap.TestWalk();
+        myError += testMap.TestWalk();
+        */
+
         tileManager = gameObject.GetComponent<TilemapManager>();
         tileManager.DrawMap();
         RandomSpawns();
@@ -256,7 +266,9 @@ public class GameManager : MonoBehaviour
 
     public Vertex RealCoordsToMap(Vector2 pos)
     {
-        return new Vertex(){x=(int)(pos.x - 13.5),y=(int)(-pos.y + 11.5f)};
+        int xPos = (pos.x) >= 0 ? ((int)(pos.x+0.4f)+14) : ((int)(pos.x - 0.4f) + 13);
+        int yPos = (pos.y) >= 0 ? (-(int)(pos.y+0.4f)+11) : (-(int)(pos.y-0.4f) + 12);
+        return new Vertex() { x = xPos, y = yPos };
     }
 
 }

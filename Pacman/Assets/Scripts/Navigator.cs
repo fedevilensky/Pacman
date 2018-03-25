@@ -6,6 +6,7 @@ using UnityEngine;
 public class Navigator
 {
     private static int[,] pathMatrix;
+    public string print;
 
 
     public Navigator()
@@ -27,18 +28,24 @@ public class Navigator
             }
         }
     }
+    
 
     public Vertex GetNextStep(Vertex from, Vertex to)
     {
+        print = "";
         Vertex destination = GetClosestVertex(to);
         if (Graph.ContainsVertex(from))
         {
             int verNumber = pathMatrix[Graph.GetVertexPos(from), Graph.GetVertexPos(destination)];
             if (verNumber == Graph.INF)
             {
+                print += "hace dikjstra";
+                print += "\n";
                 CalculatePath(from, destination);
                 verNumber = pathMatrix[Graph.GetVertexPos(from), Graph.GetVertexPos(destination)];
             }
+            print += "va a "+ Graph.GetVertexPos(verNumber);
+            print += "\n";
             return Graph.GetVertexPos(verNumber);
         }
         else
@@ -53,6 +60,8 @@ public class Navigator
         }
         else
         {
+            print += "no lo encontro";
+            print += "\n";
             Vertex nextPos = pos;
             int maxCost = 100;
             int[] movX = new int[] { 1, -1, 0, 0 };
@@ -104,7 +113,6 @@ public class Navigator
             previousStep[i] = Graph.INF;
         }
         queue.InsertarConPrioridad(from, 0);
-
         while (!queue.EstaVacia())
         {
             Vertex actualVertex = queue.EliminarElementoMayorPrioridad();
@@ -125,7 +133,6 @@ public class Navigator
                 }
             }
         }
-
         PrintInMatrix(previousStep, from, to);
     }
 
@@ -135,7 +142,7 @@ public class Navigator
         int toPos = Graph.GetVertexPos(to);
         int current = toPos;
         List<int> movesList = new List<int>();
-        while (previousStep[current] != Graph.INF)
+        while (previousStep[current] != Graph.INF&&fromPos!=current)
         {
             pathMatrix[current, fromPos] = previousStep[current];
             movesList.Add(current);

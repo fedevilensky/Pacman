@@ -163,7 +163,6 @@ public class TilemapManager : MonoBehaviour
         Graph.AddVertex(actualVertex);
         bool[,] visited = new bool[booleanMap.GetLength(0), booleanMap.GetLength(1)];
         visited[actualVertex.x, actualVertex.y] = true;
-        GameObject insObject = Instantiate(GameManager.instance.borrarPrefab, GameManager.instance.MapToRealCoords(actualVertex.x, actualVertex.y), Quaternion.identity) as GameObject;
         CreateMapGraphBT( visited, movX, movY, actualVertex.x, actualVertex.y, lastVertex,1);
 
     }
@@ -202,7 +201,7 @@ public class TilemapManager : MonoBehaviour
                     else
                         CreateMapGraphBT(visited, movX, movY, actualVertex.x, actualVertex.y, lastVertex, lastCost + 1);
                 }
-                else if (Graph.ContainsVertex(actualVertex))
+                else if (Graph.ContainsVertex(actualVertex) && (actualVertex.x != lastVertex.x || actualVertex.y != lastVertex.y))
                 {
                     Graph.AddArch(actualVertex, lastVertex, lastCost);
                 }
