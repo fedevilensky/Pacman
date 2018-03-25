@@ -50,6 +50,11 @@ public class TilemapManager : MonoBehaviour
 
     public void DrawMap()
     {
+        GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
+        foreach(GameObject wall in walls)
+        {
+            Destroy(wall);
+        }
         roomCollection = new RoomCollection();
         List<TileInfo[,]> roomList = roomCollection.GetList();
 

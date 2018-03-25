@@ -84,15 +84,6 @@ public class GameManager : MonoBehaviour
         DestroyInstances();
         ResetBools();
         waypointList = new List<Vector3>();
-        /*
-        TestMap testMap = new TestMap();
-        testMap.CreateGraph();
-        myError += testMap.TestWalk();
-        myError += testMap.TestWalk();
-        myError += testMap.TestWalk();
-        myError += testMap.TestWalk();
-        */
-
         tileManager = gameObject.GetComponent<TilemapManager>();
         tileManager.DrawMap();
         RandomSpawns();
@@ -266,8 +257,8 @@ public class GameManager : MonoBehaviour
 
     public Vertex RealCoordsToMap(Vector2 pos)
     {
-        int xPos = (pos.x) >= 0 ? ((int)(pos.x+0.4f)+14) : ((int)(pos.x - 0.4f) + 13);
-        int yPos = (pos.y) >= 0 ? (-(int)(pos.y+0.4f)+11) : (-(int)(pos.y-0.4f) + 12);
+        int xPos = (pos.x) >= 0 ? ((int)(pos.x+0f)+14) : ((int)(pos.x - 0f) + 13);
+        int yPos = (pos.y) >= 0 ? (-(int)(pos.y+0f)+11) : (-(int)(pos.y-0f) + 12);
         return new Vertex() { x = xPos, y = yPos };
     }
 

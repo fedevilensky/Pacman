@@ -32,20 +32,15 @@ public class Navigator
 
     public Vertex GetNextStep(Vertex from, Vertex to)
     {
-        print = "";
         Vertex destination = GetClosestVertex(to);
         if (Graph.ContainsVertex(from))
         {
             int verNumber = pathMatrix[Graph.GetVertexPos(from), Graph.GetVertexPos(destination)];
             if (verNumber == Graph.INF)
             {
-                print += "hace dikjstra";
-                print += "\n";
                 CalculatePath(from, destination);
                 verNumber = pathMatrix[Graph.GetVertexPos(from), Graph.GetVertexPos(destination)];
             }
-            print += "va a "+ Graph.GetVertexPos(verNumber);
-            print += "\n";
             return Graph.GetVertexPos(verNumber);
         }
         else
@@ -60,8 +55,6 @@ public class Navigator
         }
         else
         {
-            print += "no lo encontro";
-            print += "\n";
             Vertex nextPos = pos;
             int maxCost = 100;
             int[] movX = new int[] { 1, -1, 0, 0 };
@@ -124,11 +117,13 @@ public class Navigator
             {
                 int posV = Graph.GetVertexPos(v);
                 int posActualVertex = Graph.GetVertexPos(actualVertex);
-                if (dist[posV] == Graph.INF
-                    || dist[posV] > dist[posActualVertex] + adjacencyMatrix[posActualVertex, posV])
+                if (dist[posV] == Graph.INF || dist[posV] > dist[posActualVertex] + adjacencyMatrix[posActualVertex, posV])
                 {
                     dist[posV] = dist[posActualVertex] + adjacencyMatrix[posActualVertex, posV];
-                    queue.InsertarConPrioridad(v, -dist[posV]);
+                    if (!queue.Pertenece(v))
+                        queue.InsertarConPrioridad(v, -dist[posV]);
+                    else
+                        queue.CambiarPrioridad(v, -dist[posV]);
                     previousStep[posV] = posActualVertex;
                 }
             }

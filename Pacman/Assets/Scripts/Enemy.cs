@@ -28,8 +28,9 @@ public class Enemy : MovingObject
     void Awake()
     {
         timeSinceLastPathfind = pathfindingDelay;
-        lastPathfind = Pathfinding.RUNNING_AWAY;
+        lastPathfind = Pathfinding.CHASING;
         navigator = new Navigator();
+        moveDirection = Vector2.zero;
     }
 
     private void OnCollisionEnter2D(Collision2D coll)
@@ -60,16 +61,14 @@ public class Enemy : MovingObject
             Vertex playerPosition = GameManager.instance.RealCoordsToMap(GameManager.instance.player.transform.position);
             Vertex myPos = GameManager.instance.RealCoordsToMap(transform.position);
             timeSinceLastPathfind += Time.deltaTime;
-            if(destination == null || vertexComp.Equals(myPos, destination))
+            if(destination == null || (vertexComp.Equals(myPos, destination)&&CanTurn(transform.position)))
             {
-                log +="estoy en "+ myPos.ToString();
-                log += "\n";
                 destination = navigator.GetNextStep(myPos, playerPosition);
                 log += navigator.print;
                 rb2D.velocity = Vector2.zero;
                 ChangeDirection(destination);
             }
-            Move(moveDirection);
+                Move(moveDirection);
 
             //FALTA COMPORTAMIENTO SI VE AL JUGADOR Y COMPORTAMIENTO DE SI EL JUGADOR TIENE EL ARMA
             /*
@@ -126,14 +125,27 @@ public class Enemy : MovingObject
         }
     }
 
+    private bool CanTurn(Vector3 pos)
+    {
+        float xPos = Mathf.Abs(pos.x) - (int)Mathf.Abs(pos.x);
+        float yPos = Mathf.Abs(pos.y) - (int)Mathf.Abs(pos.y);
+        if (IsInTurnRange(xPos) && IsInTurnRange(yPos))
+            return true;
+        else
+            return false;
+    }
+
+    private bool IsInTurnRange(float val)
+    {
+        return (val > 0.3f && val < 0.7f);
+    }
+
     private void ChangeDirection(Vertex to)
     {
         Vertex myPos = GameManager.instance.RealCoordsToMap(transform.position);
         int xDirection = (to.x - myPos.x) > 0 ? 1 : ((to.x - myPos.x) < 0 ? -1 : 0);
         int yDirection = (myPos.y - to.y) > 0 ? 1 : ((myPos.y - to.y) < 0 ? -1 : 0);
         moveDirection =  new Vector2(xDirection, yDirection);
-        log += "me muevo: x: " + xDirection + " y: " + yDirection;
-        log += "\n";
     }
     
     
