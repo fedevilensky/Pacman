@@ -20,7 +20,7 @@ public class Navigator
                 for (int j = 0; j < aux.GetLength(1); j++)
                 {
                     pathMatrix[i, j] = Graph.INF;
-                    if (aux[i, j] != Graph.INF)
+                    if (aux[i, j] != Graph.INF || i==j)
                     {
                         pathMatrix[i, j] = j;
                     }

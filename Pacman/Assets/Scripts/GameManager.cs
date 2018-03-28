@@ -95,7 +95,6 @@ public class GameManager : MonoBehaviour
         GameObject[] enemies = new GameObject[1];
         enemies[0] = enemy;
         SoundManager.instance.enemies = enemies;
-        SoundManager.instance.LoadEnemySound();
         gunAppearedText.SetActive(false);
         loading = false;
     }
