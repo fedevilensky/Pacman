@@ -109,6 +109,7 @@ public class TilemapManager : MonoBehaviour
                 }
             }
         }
+        ClosestVertex.SetBoolMap(booleanMap);
         CreateGraph();
     }
 

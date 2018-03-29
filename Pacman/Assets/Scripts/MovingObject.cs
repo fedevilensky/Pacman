@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class MovingObject : MonoBehaviour {
 
-    public float movingSpeed;
+    protected float movingSpeed;
 
     protected Rigidbody2D rb2D;
 
@@ -17,7 +17,7 @@ public abstract class MovingObject : MonoBehaviour {
     {
         if (!GameManager.instance.hasEnded)
         {
-            rb2D.velocity = movement * movingSpeed;
+            rb2D.velocity = movement * movingSpeed*GameManager.instance.gameSpeed;
         }
         else
         {

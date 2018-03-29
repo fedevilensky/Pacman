@@ -32,7 +32,7 @@ public class Navigator
 
     public Vertex GetNextStep(Vertex from, Vertex to)
     {
-        Vertex destination = GetClosestVertex(to);
+        Vertex destination = ClosestVertex.Find(to);
         if (Graph.ContainsVertex(from))
         {
             int verNumber = pathMatrix[Graph.GetVertexPos(from), Graph.GetVertexPos(destination)];
@@ -44,52 +44,7 @@ public class Navigator
             return Graph.GetVertexPos(verNumber);
         }
         else
-            return GetClosestVertex(from);
-    }
-
-    private Vertex GetClosestVertex(Vertex pos)
-    {
-        if (Graph.ContainsVertex(pos))
-        {
-            return pos;
-        }
-        else
-        {
-            Vertex nextPos = pos;
-            int maxCost = 100;
-            int[] movX = new int[] { 1, -1, 0, 0 };
-            int[] movY = new int[] { 0, 0, 1, -1 };
-            for (int i = 0; i < 4; i++)
-            {
-                int xCord = pos.x + movX[i];
-                int yCord = pos.y + movY[i];
-                int thisCost = 1;
-                if (GameManager.instance.tileManager.IsFloor(xCord,yCord))
-                {
-                    bool foundVer = false;
-                    Vertex tryPos = new Vertex() { x = xCord, y = yCord };
-                    while (!foundVer && GameManager.instance.tileManager.IsFloor(xCord,yCord) && maxCost > thisCost)
-                    {
-                        if (!Graph.ContainsVertex(tryPos))
-                        {
-                            tryPos.x += movX[i];
-                            tryPos.y += movY[i];
-                            thisCost++;
-                        }
-                        else
-                        {
-                            foundVer = true;
-                        }
-                    }
-                    if (foundVer)
-                    {
-                        nextPos = tryPos;
-                        maxCost = thisCost;
-                    }
-                }
-            }
-            return nextPos;
-        }
+            return ClosestVertex.Find(from);
     }
 
     //Aca va el Dikjstra
@@ -98,8 +53,8 @@ public class Navigator
         int[,] adjacencyMatrix = Graph.GetAdjacencyMatrix();
         VertexEqualityComparer comp = new VertexEqualityComparer();
         PriorityQueue<Vertex> queue = new ImplementedPriorityQueue<Vertex>(new VertexEqualityComparerGenericObject());
-        int[] previousStep = new int[Graph.CountVertexes()];
-        int[] dist = new int[Graph.CountVertexes()];
+        int[] previousStep = new int[Graph.GetAdjacencyMatrix().GetLength(0)];
+        int[] dist = new int[Graph.GetAdjacencyMatrix().GetLength(0)];
         for (int i = 0; i < dist.Length; i++)
         {
             dist[i] = Graph.INF;

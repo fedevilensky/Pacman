@@ -1,20 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Pathfinding
-{
-    RUNNING_AWAY,
-    CHASING
-}
 
 public class Enemy : MovingObject
 {
     public GameObject killRadius;
-    public const float pathfindingDelay = 1f;
-    public float timeSinceLastPathfind;
-    public Pathfinding lastPathfind;
     public string log = "";
+    public float maxSightDistance;
+    [HideInInspector] public StrategySelector strategy;
 
     private bool calculatingPath = false;
     private int infinity = -1;
@@ -27,8 +22,6 @@ public class Enemy : MovingObject
 
     void Awake()
     {
-        timeSinceLastPathfind = pathfindingDelay;
-        lastPathfind = Pathfinding.CHASING;
         navigator = new Navigator();
         moveDirection = Vector2.zero;
     }
@@ -53,22 +46,36 @@ public class Enemy : MovingObject
         rb2D.bodyType = RigidbodyType2D.Static;
     }
 
+    private bool NegligibleVelocity()
+    {
+        return Mathf.Sqrt(Mathf.Pow(rb2D.velocity.x, 2) + Mathf.Pow(rb2D.velocity.y, 2)) < (movingSpeed * GameManager.instance.gameSpeed) / 3;
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!GameManager.instance.hasEnded)
+        if (!GameManager.instance.loading)
         {
+            killRadius.SetActive(GameManager.instance.playerHasGun);
+            strategy.Update(Time.fixedDeltaTime);
             Vertex playerPosition = GameManager.instance.RealCoordsToMap(GameManager.instance.player.transform.position);
             Vertex myPos = GameManager.instance.RealCoordsToMap(transform.position);
-            timeSinceLastPathfind += Time.deltaTime;
-            if(destination == null || (vertexComp.Equals(myPos, destination)&&CanTurn(transform.position)))
+            movingSpeed = strategy.Velocity;
+            if (moveDirection == Vector2.zero || CanTurn(transform.position))
             {
-                destination = navigator.GetNextStep(myPos, playerPosition);
-                log += navigator.print;
-                rb2D.velocity = Vector2.zero;
-                ChangeDirection(destination);
-            }
+                if (SeePlayer(playerPosition, myPos) && strategy.InteractOnSight())
+                {
+                    moveDirection = strategy.MoveOnSight(playerPosition, myPos, GameManager.instance.player.GetComponent<Rigidbody2D>().velocity);
+                    destination = null;
+                }
+                else if (destination == null && NegligibleVelocity()  || Graph.ContainsVertex(myPos))
+                {
+                    destination = strategy.NextVertex(playerPosition, myPos, GameManager.instance.player.GetComponent<Rigidbody2D>().velocity);
+                    GetMovementDirection(destination);
+                }
                 Move(moveDirection);
+            }
+
 
             //FALTA COMPORTAMIENTO SI VE AL JUGADOR Y COMPORTAMIENTO DE SI EL JUGADOR TIENE EL ARMA
             /*
@@ -125,14 +132,51 @@ public class Enemy : MovingObject
         }
     }
 
+    private float Distance(Vertex v1, Vertex v2)
+    {
+        return Mathf.Sqrt(Mathf.Pow(v1.x - v2.x, 2) + Mathf.Pow(v1.y - v2.y, 2));
+    }
+
+    private bool SeePlayer(Vertex v1, Vertex v2)
+    {
+        if (v1.x != v2.x && v1.y != v2.y || Distance(v1, v2) >= maxSightDistance)
+            return false;
+        else
+        {
+            bool ret;
+            if (v1.x != v2.x)
+            {
+                int pos = v1.x;
+                int it = 1;
+                if (pos > v2.x)
+                    it = -1;
+                while (pos != v2.x && GameManager.instance.tileManager.IsFloor(pos, v1.y))
+                {
+                    pos += it;
+                }
+                ret = GameManager.instance.tileManager.IsFloor(pos, v1.y);
+            }
+            else
+            {
+                int pos = v1.y;
+                int it = 1;
+                if (pos > v2.y)
+                    it = -1;
+                while (pos != v2.y && GameManager.instance.tileManager.IsFloor(v1.x, pos))
+                {
+                    pos += it;
+                }
+                ret = GameManager.instance.tileManager.IsFloor(v1.x, pos);
+            }
+            return ret;
+        }
+    }
+
     private bool CanTurn(Vector3 pos)
     {
-        float xPos = Mathf.Abs(pos.x) - (int)Mathf.Abs(pos.x);
-        float yPos = Mathf.Abs(pos.y) - (int)Mathf.Abs(pos.y);
-        if (IsInTurnRange(xPos) && IsInTurnRange(yPos))
-            return true;
-        else
-            return false;
+        float xPos = Mathf.Abs(pos.x - (int)pos.x);
+        float yPos = Mathf.Abs(pos.y - (int)pos.y);
+        return IsInTurnRange(xPos) && IsInTurnRange(yPos);
     }
 
     private bool IsInTurnRange(float val)
@@ -140,34 +184,20 @@ public class Enemy : MovingObject
         return (val > 0.3f && val < 0.7f);
     }
 
-    private void ChangeDirection(Vertex to)
+    private void GetMovementDirection(Vertex to)
     {
-        Vertex myPos = GameManager.instance.RealCoordsToMap(transform.position);
-        int xDirection = (to.x - myPos.x) > 0 ? 1 : ((to.x - myPos.x) < 0 ? -1 : 0);
-        int yDirection = (myPos.y - to.y) > 0 ? 1 : ((myPos.y - to.y) < 0 ? -1 : 0);
-        moveDirection =  new Vector2(xDirection, yDirection);
-    }
-    
-    
-    
-    /*
-    private Vector3 FindWaypoint()
-    {
-        Vertex ret = lastPlayerPosition;
-        int max = 0;
-        foreach (Vector3 v in GameManager.instance.waypointList)
+        if (to == null)
         {
-            if (destination == null || !vertexComp.Equals(v, destination))
-            {
-                int newDistance = distanceCalculator.Calculate(v, lastPlayerPosition);
-                if (max < newDistance)
-                {
-                    max = newDistance;
-                    ret = v;
-                }
-            }
+            moveDirection = Vector2.zero;
         }
+        else
+        {
+            Vertex myPos = GameManager.instance.RealCoordsToMap(transform.position);
+            int xDirection = (to.x - myPos.x) > 0 ? 1 : ((to.x - myPos.x) < 0 ? -1 : 0);
+            int yDirection = (myPos.y - to.y) > 0 ? 1 : ((myPos.y - to.y) < 0 ? -1 : 0);
+            moveDirection = new Vector2(xDirection, yDirection);
+        }
+    }
 
-        return ret;
-    }*/
+
 }

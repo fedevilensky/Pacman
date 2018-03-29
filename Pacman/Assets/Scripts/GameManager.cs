@@ -35,6 +35,8 @@ public class GameManager : MonoBehaviour
     public GameObject farPoint;
     [HideInInspector]public bool loading;
     public float marginError = 0.1f;
+    public float gameSpeed = 2f;
+    [HideInInspector] public int itemsCollected;
 
     public String myError = "";
 
@@ -94,8 +96,10 @@ public class GameManager : MonoBehaviour
         lastGunSpawn = 1f;
         GameObject[] enemies = new GameObject[1];
         enemies[0] = enemy;
+        enemy.GetComponent<Enemy>().strategy = new StrategyWanderTest();
         SoundManager.instance.enemies = enemies;
         gunAppearedText.SetActive(false);
+        itemsCollected = 0;
         loading = false;
     }
 

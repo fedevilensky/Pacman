@@ -6,13 +6,16 @@ public class SoundManager : MonoBehaviour
 {
 
     public static SoundManager instance;
-    public AudioSource bgm;
     public GameObject[] enemies;
     public AudioClip[] enemyAudios;
+    public AudioClip playerHasGunSound;
+    public AudioClip playerDoesNotHaveGun;
     public float maxDistance;
     public float intervalDistance;
     public float minDistance;
     public string error;
+    public AudioSource bgm;
+
     private float closestDistance;
     private AudioSource[] aSources;
 
@@ -42,18 +45,56 @@ public class SoundManager : MonoBehaviour
     {
         if (!GameManager.instance.loading)
         {
-            closestDistance = maxDistance+1;
-            foreach (GameObject enemy in enemies)
+            foreach (AudioSource a in aSources)
             {
-                float distance = Vector2.Distance(enemy.transform.position, GameManager.instance.player.transform.position);
-                distance = (distance > maxDistance) ? maxDistance : (distance < minDistance) ? minDistance : distance;
-                if (distance < closestDistance)
+                if (!a.isPlaying)
                 {
-                    closestDistance = distance;
+                    a.Play();
+                }
+                else break;
+            }
+            if (GameManager.instance.playerHasGun)
+            {
+                if (aSources[0].clip != playerHasGunSound)
+                {
+                    foreach (AudioSource a in aSources)
+                    {
+                        a.volume = 0;
+                    }
+                    aSources[0].clip = playerHasGunSound;
+                    aSources[0].volume = 0.7f;
+                    aSources[0].Play();
                 }
             }
-            AdjustAudios();
+            else
+            {
+                if(aSources[0].clip != playerDoesNotHaveGun)
+                {
+                    aSources[0].clip = playerDoesNotHaveGun;
+                    aSources[0].volume = 0.5f;
+                    aSources[0].Play();
+                }
+                closestDistance = maxDistance + 1;
+                foreach (GameObject enemy in enemies)
+                {
+                    float distance = Vector2.Distance(enemy.transform.position, GameManager.instance.player.transform.position);
+                    distance = (distance > maxDistance) ? maxDistance : (distance < minDistance) ? minDistance : distance;
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                    }
+                }
+                AdjustAudios();
+            }
         }
+        else 
+        {
+            foreach(AudioSource a in aSources)
+            {
+                a.Stop();
+            }
+        }
+        
     }
 
 
@@ -75,20 +116,5 @@ public class SoundManager : MonoBehaviour
             aSources[i].volume = 0f;
         }
     }
-    /*
-    public void LoadEnemySound(GameObject enemy, float distance)
-    {
-        if (audioNumber != enemySound)
-        {
-            enemySound = audioNumber;
-            error =""+ audioNumber;
-            AudioSource source;
-            source = enemy.GetComponent<AudioSource>();
-            source.clip = enemyAudios[audioNumber];
-            source.loop = true;
-            source.Play();
-        }
-    }*/
-    
 
 }
