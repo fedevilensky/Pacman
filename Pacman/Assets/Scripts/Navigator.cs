@@ -47,6 +47,65 @@ public class Navigator
             return ClosestVertex.Find(from);
     }
 
+    public Vertex AStarStep(Vertex from, Vertex to, IHeuristicCostCalculator hCostCalculator)
+    {
+        int[,] auxMatrix = new int[Graph.GetAdjacencyMatrix().GetLength(0), Graph.GetAdjacencyMatrix().GetLength(0)];
+        for (int i = 0; i < auxMatrix.GetLength(0); i++)
+        {
+            for (int j = 0; j < auxMatrix.GetLength(1); j++)
+            {
+                auxMatrix[i, j] = Graph.INF;
+            }
+        }
+        VertexEqualityComparer comp = new VertexEqualityComparer();
+        PriorityQueue<Vertex> queue = new ImplementedPriorityQueue<Vertex>(new VertexEqualityComparerGenericObject());
+        int[] previousStep = new int[Graph.GetAdjacencyMatrix().GetLength(0)];
+        int[] cost = new int[Graph.GetAdjacencyMatrix().GetLength(0)];
+        for (int i = 0; i < cost.Length; i++)
+        {
+            cost[i] = Graph.INF;
+            previousStep[i] = Graph.INF;
+        }
+        queue.InsertarConPrioridad(from, 0);
+        while (!queue.EstaVacia())
+        {
+            Vertex actualVertex = queue.EliminarElementoMayorPrioridad();
+            if (comp.Equals(actualVertex, to))
+            {
+                break;
+            }
+
+            int posActualVertex = Graph.GetVertexPos(actualVertex);
+            foreach (Vertex v in Graph.GetAdjacents(actualVertex))
+            {
+                int posV = Graph.GetVertexPos(v);
+                int heuristicCost = - hCostCalculator.Calculate(v);
+                if (cost[posV] == Graph.INF || cost[posV] > cost[posActualVertex] + heuristicCost)
+                {
+                    cost[posV] = cost[posActualVertex] + heuristicCost;
+                    if (!queue.Pertenece(v))
+                        queue.InsertarConPrioridad(v, -cost[posV]);
+                    else
+                        queue.CambiarPrioridad(v, -cost[posV]);
+                    previousStep[posV] = posActualVertex;
+                }
+            }
+        }
+
+        return FirstStep(from, to, previousStep);
+    }
+
+    private Vertex FirstStep(Vertex from, Vertex to, int[] previousStep)
+    {
+        int aux = Graph.GetVertexPos(to);
+        int goal = Graph.GetVertexPos(from);
+        while(previousStep[aux] != goal)
+        {
+            aux = previousStep[aux];
+        }
+        return Graph.GetVertexPos(aux);
+    }
+
     //Aca va el Dikjstra
     private void CalculatePath(Vertex from, Vertex to)
     {
