@@ -137,11 +137,13 @@ public class GameManager : MonoBehaviour
     public void EquipGun()
     {
         playerHasGun = true;
+        enemy.GetComponent<Enemy>().strategy = new StrategyEscapeTest();
     }
 
     public void DestroyGun()
     {
         Destroy(gun);
+        enemy.GetComponent<Enemy>().strategy = new StrategyWanderTest();
     }
 
     void FixedUpdate()

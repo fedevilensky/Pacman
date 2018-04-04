@@ -47,6 +47,21 @@ public class Navigator
             return ClosestVertex.Find(from);
     }
 
+    public Vertex AStarNextStep(Vertex from, Vertex to, IHeuristicCostCalculator hCostCalculator)
+    {
+        Vertex destination = ClosestVertex.Find(to);
+        if (Graph.ContainsVertex(from))
+        {
+            if(new VertexEqualityComparer().Equals(from, to))
+            {
+                return from;
+            }
+            return AStarStep(from, to, hCostCalculator);
+        }
+        else
+            return ClosestVertex.Find(from);
+    }
+
     public Vertex AStarStep(Vertex from, Vertex to, IHeuristicCostCalculator hCostCalculator)
     {
         int[,] auxMatrix = new int[Graph.GetAdjacencyMatrix().GetLength(0), Graph.GetAdjacencyMatrix().GetLength(0)];
@@ -67,7 +82,8 @@ public class Navigator
             previousStep[i] = Graph.INF;
         }
         queue.InsertarConPrioridad(from, 0);
-        while (!queue.EstaVacia())
+        int n = 0;
+        while (!queue.EstaVacia()&&n<2000)
         {
             Vertex actualVertex = queue.EliminarElementoMayorPrioridad();
             if (comp.Equals(actualVertex, to))
@@ -79,7 +95,7 @@ public class Navigator
             foreach (Vertex v in Graph.GetAdjacents(actualVertex))
             {
                 int posV = Graph.GetVertexPos(v);
-                int heuristicCost = - hCostCalculator.Calculate(v);
+                int heuristicCost = hCostCalculator.Calculate(v);
                 if (cost[posV] == Graph.INF || cost[posV] > cost[posActualVertex] + heuristicCost)
                 {
                     cost[posV] = cost[posActualVertex] + heuristicCost;
@@ -90,20 +106,35 @@ public class Navigator
                     previousStep[posV] = posActualVertex;
                 }
             }
+            n++;
         }
 
-        return FirstStep(from, to, previousStep);
+        if (n == 2000)
+        {
+            throw new System.Exception("inf loop en astar");
+        }
+        return FirstStep(from, to,  previousStep);
     }
 
-    private Vertex FirstStep(Vertex from, Vertex to, int[] previousStep)
+    private Vertex FirstStep(Vertex from, Vertex to, int[] apath)
     {
         int aux = Graph.GetVertexPos(to);
         int goal = Graph.GetVertexPos(from);
-        while(previousStep[aux] != goal)
+        int n = 0;
+        while(apath!=null&&apath[aux] != goal&&apath[aux]!=Graph.INF &&n<500)
         {
-            aux = previousStep[aux];
+            aux = apath[aux];
+        }
+        if (n == 500)
+        {
+            throw new System.Exception("inf loop en first");
+        }
+        if (apath[aux] == Graph.INF)
+        {
+            throw new System.Exception("lo manda a un lugar equivocado de "+from.ToString()+" - hacia "+to.ToString());
         }
         return Graph.GetVertexPos(aux);
+        
     }
 
     //Aca va el Dikjstra

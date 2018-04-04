@@ -17,13 +17,12 @@ public class Enemy : MovingObject
     private Vertex lastPosition = null;
     private VertexEqualityComparer vertexComp = new VertexEqualityComparer();
     private Vertex destination;
-    private Navigator navigator;
     private Vector2 moveDirection;
 
     void Awake()
     {
-        navigator = new Navigator();
         moveDirection = Vector2.zero;
+        maxSightDistance = 4f;
     }
 
     private void OnCollisionEnter2D(Collision2D coll)
@@ -65,6 +64,7 @@ public class Enemy : MovingObject
             {
                 if (SeePlayer(playerPosition, myPos) && strategy.InteractOnSight())
                 {
+                    log += "  saw player";
                     moveDirection = strategy.MoveOnSight(playerPosition, myPos, GameManager.instance.player.GetComponent<Rigidbody2D>().velocity);
                     destination = null;
                 }

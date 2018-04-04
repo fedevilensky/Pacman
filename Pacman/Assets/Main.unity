@@ -166,7 +166,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -189,7 +189,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 366752501}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1.6441379, y: -0.33430701, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -10290,16 +10290,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe153d8edabed574e9245316c75f7382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgm: {fileID: 0}
   enemies: []
   enemyAudios:
   - {fileID: 8300000, guid: ad6dedaefbb77c34c8e3fc6cba8759ef, type: 3}
   - {fileID: 8300000, guid: 8d1c740817a9e8e41a6c475882b277eb, type: 3}
   - {fileID: 8300000, guid: 21d5daea058e36d48a6af1318ca69e65, type: 3}
+  playerHasGunSound: {fileID: 8300000, guid: c1f1dcf3eb7788e458e6d26bf3a19ee9, type: 3}
+  playerDoesNotHaveGun: {fileID: 8300000, guid: ad6dedaefbb77c34c8e3fc6cba8759ef,
+    type: 3}
   maxDistance: 6
   intervalDistance: 3
   minDistance: 2
   error: 
+  bgm: {fileID: 0}
 --- !u!82 &1877217403
 AudioSource:
   m_ObjectHideFlags: 0
@@ -10607,6 +10610,8 @@ MonoBehaviour:
   farPoint: {fileID: 900959425}
   loading: 0
   marginError: 0.1
+  gameSpeed: 2
+  itemsCollected: 0
   myError: 
   waypointList: []
   boolMapPrint: 

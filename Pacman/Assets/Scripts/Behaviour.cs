@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class Behaviour {
     protected float velocity;
+    public string error;
 
     protected Navigator nav = new Navigator();
 

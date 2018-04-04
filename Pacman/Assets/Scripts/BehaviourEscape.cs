@@ -8,7 +8,7 @@ public class BehaviourEscape : Behaviour
 
     public BehaviourEscape()
     {
-        velocity = 0.9f;
+        velocity = 0.8f;
     }
 
     public override bool InteractOnSight()
@@ -25,21 +25,21 @@ public class BehaviourEscape : Behaviour
     {
         if (destination == null || new VertexEqualityComparer().Equals(enemyPos, destination))
         {
+            
             int shortestDistance = 100;
             int aux = Random.Range(0, Graph.CountVertexes());
             foreach (Vertex v in Graph.GetEveryVertex())
             {
-                if (Distance(v, playerPos) > 13 && Distance(v, enemyPos) < shortestDistance)
+                if (Distance(v, playerPos) > 10 && Distance(v, enemyPos) < shortestDistance&& Distance(v, enemyPos) > 2)
                 {
                     destination = v;
                     shortestDistance = Distance(v, enemyPos);
                 }
             }
         }
-        return nav.AStarStep(enemyPos, destination, new EscapeHeuristicCostCalculator(playerPos));
+        return nav.AStarNextStep(enemyPos, destination, new EscapeHeuristicCostCalculator(playerPos));
     }
-
-
+    
     private int Distance(Vertex v1, Vertex v2)
     {
         return (int)Mathf.Sqrt(Mathf.Pow(v1.x - v2.x, 2) + Mathf.Pow(v1.y - v2.y, 2));
