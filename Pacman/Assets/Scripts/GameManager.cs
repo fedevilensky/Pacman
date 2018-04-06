@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public GameObject player;
     public GameObject playerPrefab;
     [HideInInspector] public GameObject enemy;
+    [HideInInspector] public GameObject[] collectibles;
+    public GameObject collectiblePrefab;
     public GameObject gunPrefab;
     public GameObject enemyPrefab;
     public static GameManager instance;
@@ -37,10 +39,12 @@ public class GameManager : MonoBehaviour
     public float marginError = 0.1f;
     public float gameSpeed = 2f;
     [HideInInspector] public int itemsCollected;
+    [HideInInspector] public bool enemyDead;
+    [HideInInspector] public float respawnTime;
 
     public String myError = "";
 
-
+    private HashSet<int> waypointsUsed;
     private int level = 1;
     public List<Vector3> waypointList;
     private float lastGunSpawn;
@@ -65,17 +69,11 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         StartLevel();
     }
-    /*
-    private void OnLevelWasLoaded(int index)
-    {
-        level++;
-        InitGame();
-    }*/
 
     private void StartLevel()
     {
         loading = true;
-        levelText.text = "Level " + level;
+        levelText.text = "Collect the 6 items";
         camera.Follow = farPoint.transform;
         Invoke("InitGame", restartLevelDelay);
     }
@@ -87,13 +85,17 @@ public class GameManager : MonoBehaviour
         ResetBools();
         waypointList = new List<Vector3>();
         tileManager = gameObject.GetComponent<TilemapManager>();
+        collectibles = new GameObject[6];
         tileManager.DrawMap();
+
+        waypointsUsed = new HashSet<int>();
         RandomSpawns();
         AssignCamera();
 
 
         
         lastGunSpawn = 1f;
+        respawnTime = 20f;
         GameObject[] enemies = new GameObject[1];
         enemies[0] = enemy;
         enemy.GetComponent<Enemy>().strategy = new StrategyWanderTest();
@@ -105,6 +107,7 @@ public class GameManager : MonoBehaviour
 
     private void ResetBools()
     {
+        enemyDead = false;
         gameOver = false;
         hasEnded = false;
         gunIsSpawned = false;
@@ -116,12 +119,27 @@ public class GameManager : MonoBehaviour
         Destroy(gun);
         Destroy(enemy);
         Destroy(player);
+        foreach(GameObject c in collectibles)
+        {
+            Destroy(c);
+        }
     }
 
     private void Update()
     {
         if (!loading)
         {
+            if (enemyDead)
+            {
+                respawnTime -= Time.deltaTime;
+            }
+            if (respawnTime <= 0f && enemyDead)
+            {
+                Destroy(enemy);
+                 int   spawnPoint = UnityEngine.Random.Range(0, waypointList.Count);
+                InstantiatePrefab(spawnPoint, out enemy, enemyPrefab);
+                enemyDead = false;
+            }
             if (gameOver && !hasEnded)
             {
                 hasEnded = true;
@@ -191,7 +209,6 @@ public class GameManager : MonoBehaviour
     private void RandomSpawns()
     {
         //aca instanciamos al jugador
-        HashSet<int> waypointsUsed = new HashSet<int>();
         int spawnPoint = UnityEngine.Random.Range(0, waypointList.Count);
         waypointsUsed.Add(spawnPoint);
         InstantiatePrefab(spawnPoint, out player, playerPrefab);
@@ -199,10 +216,47 @@ public class GameManager : MonoBehaviour
         do
         {
             spawnPoint = UnityEngine.Random.Range(0, waypointList.Count);
-        } while (waypointsUsed.Contains(spawnPoint));
+        } while (ValidSpawn(spawnPoint));
         waypointsUsed.Add(spawnPoint);
         InstantiatePrefab(spawnPoint, out enemy, enemyPrefab);
-        //aca poner el spawn del objeto
+
+        //aca poner el spawn de los objetos
+        for (int i = 0; i < 6; i++)
+        {
+            int n = 0;
+            do
+            {
+                spawnPoint = UnityEngine.Random.Range(0, waypointList.Count);
+                n++;
+            } while (ValidSpawn(spawnPoint)&&n<60);
+            waypointsUsed.Add(spawnPoint);
+            InstantiatePrefab(spawnPoint, out collectibles[i], collectiblePrefab);
+        }
+    }
+
+    public void AddCollectible()
+    {
+        itemsCollected++;
+        if (itemsCollected == 6)
+        {
+            hasEnded = true;
+        }
+    }
+
+    private bool ValidSpawn(int spawnPoint)
+    {
+        float minDist = 7f;
+        bool invalid = false;
+        foreach(int usedPos in waypointsUsed)
+        {
+            float thisDistance = Vector3.Distance(GetSpawn(usedPos), GetSpawn(spawnPoint));
+            if (minDist > thisDistance || waypointsUsed.Contains(spawnPoint))
+            {
+                invalid = true;
+                break;
+            }
+        }
+        return invalid;
     }
 
     private void InstantiatePrefab(int spawnPoint, out GameObject thisGameObject, GameObject prefab)
@@ -220,7 +274,6 @@ public class GameManager : MonoBehaviour
         return spawnPos;
 
     }
-
 
     private void GameOver()
     {
@@ -249,7 +302,7 @@ public class GameManager : MonoBehaviour
     {
         Destroy(endGameInstance);
         camera.Follow = farPoint.transform;
-        levelText.text = "Lost at level " + level;
+        levelText.text = "Collected " + itemsCollected+" out of 6";
         level = 1;
         Invoke("StartLevel", restartLevelDelay);
     }

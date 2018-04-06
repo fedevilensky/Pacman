@@ -10590,6 +10590,9 @@ MonoBehaviour:
   playerPrefab: {fileID: 1006664160284986, guid: c7078ab03b9689d4184883148d2f9b89,
     type: 2}
   enemy: {fileID: 0}
+  collectibles: []
+  collectiblePrefab: {fileID: 1899021934948902, guid: e0239e0a32822744ab88586e59d85b6d,
+    type: 2}
   gunPrefab: {fileID: 1890408608696848, guid: f7bf399e1b3f8154e9f464aa2025dfae, type: 2}
   enemyPrefab: {fileID: 1778189051228532, guid: 63bae2d34f8af564ba0746d3c28893c2,
     type: 2}
@@ -10612,6 +10615,8 @@ MonoBehaviour:
   marginError: 0.1
   gameSpeed: 2
   itemsCollected: 0
+  enemyDead: 0
+  respawnTime: 0
   myError: 
   waypointList: []
   boolMapPrint: 

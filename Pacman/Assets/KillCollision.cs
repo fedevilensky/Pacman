@@ -19,15 +19,12 @@ public class KillCollision : MonoBehaviour {
 
         if (!GameManager.instance.hasEnded)
         {
-            error += "a";
             if (coll.gameObject.tag == "Player")
             {
-                error += "b";
                 if (GameManager.instance.playerHasGun)
                 {
-                    error += "c";
 
-                    GameManager.instance.hasEnded = true;
+                    GameManager.instance.enemyDead = true;
                 }
 
                 enemy.CollisionWithPlayer();
