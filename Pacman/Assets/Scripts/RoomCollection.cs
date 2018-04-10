@@ -2,8 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public enum TileInfo
-{
+public enum TileInfo {
     //representado como 0
     WALL,
     //representado como 1
@@ -16,18 +15,18 @@ public enum TileInfo
     ERROR
 }
 public class RoomCollection {
-    
+
 
     public int[,] room1 = new int[,] {
         {0,2,0,0,2,0,0,2,0,0,2,0,0,2,0 },
-        {2,3,1,1,1,1,1,1,1,1,1,1,1,3,2 },
+        {2,1,1,1,1,1,1,1,1,1,1,1,1,3,2 },
         {0,1,0,0,0,1,0,0,0,1,0,0,0,1,0 },
         {0,1,0,3,1,1,1,1,1,1,1,1,0,1,0 },
         {2,1,1,1,0,0,0,1,0,0,0,1,1,1,2 },
         {0,1,0,1,0,0,0,1,0,0,0,1,0,1,0 },
-        {0,1,0,1,1,1,1,1,1,1,1,1,0,1,0 },
+        {0,1,0,1,1,1,1,1,1,1,1,3,0,1,0 },
         {0,1,0,0,0,1,0,0,0,1,0,0,0,1,0 },
-        {2,3,1,1,1,1,1,1,1,1,1,1,1,3,2 },
+        {2,3,1,1,1,1,1,1,1,1,1,1,1,1,2 },
         {0,2,0,0,2,0,0,2,0,0,2,0,0,2,0 }
     };
 
@@ -46,7 +45,7 @@ public class RoomCollection {
 
     private int[,] room3 = new int[,] {
         {0,2,0,0,2,0,0,2,0,0,2,0,0,0,0 },
-        {2,3,1,1,1,1,1,1,1,1,1,1,1,3,2 },
+        {2,1,1,1,1,1,1,1,1,1,1,1,1,3,2 },
         {0,1,0,0,0,0,0,0,0,0,0,0,0,1,0 },
         {0,1,0,3,1,1,1,1,1,1,1,3,0,1,0 },
         {0,1,0,1,0,0,0,1,0,0,0,1,0,1,0 },
@@ -62,10 +61,10 @@ public class RoomCollection {
         {0,2,0,0,2,0,0,0,0,0,2,0,0,2,0 },
         {2,1,1,1,1,1,1,1,1,1,1,1,1,1,2 },
         {0,1,0,0,0,0,0,0,0,0,0,0,0,1,0 },
-        {0,1,0,1,1,1,1,1,0,0,0,0,0,1,0 },
-        {2,1,0,1,0,1,0,1,0,1,1,1,1,1,0 },
+        {0,1,0,1,3,1,1,1,0,0,0,0,0,1,0 },
+        {2,1,0,1,0,1,0,1,0,1,1,1,3,1,0 },
         {0,1,0,1,0,1,0,1,0,1,0,0,0,0,0 },
-        {0,1,1,1,0,1,1,1,0,1,1,1,1,1,0 },
+        {0,1,3,1,0,1,1,1,0,3,1,1,1,1,0 },
         {0,1,0,0,0,1,0,0,0,0,0,0,0,1,0 },
         {2,1,1,1,1,1,1,1,1,1,1,1,1,1,2 },
         {0,2,0,0,0,0,0,2,0,0,2,0,0,2,0 }
@@ -73,14 +72,14 @@ public class RoomCollection {
 
     private int[,] room5 = new int[,] {
         {0,2,0,0,0,0,0,2,0,0,0,0,0,2,0 },
-        {2,3,1,1,1,1,1,1,1,1,1,1,1,3,2 },
+        {2,1,1,1,3,1,1,1,1,1,1,1,1,1,2 },
         {0,1,0,0,1,0,0,0,0,0,0,0,0,1,0 },
-        {0,1,1,1,1,1,1,3,1,1,1,1,1,1,0 },
+        {0,1,1,1,1,1,1,3,1,1,1,1,1,3,0 },
         {0,1,0,0,0,0,0,0,0,0,0,0,0,1,0 },
         {0,1,0,0,0,0,0,0,0,0,0,0,0,1,0 },
-        {0,1,1,1,1,1,1,3,1,1,1,1,1,1,0 },
+        {0,3,1,1,1,1,1,3,1,1,1,1,1,1,0 },
         {0,1,0,0,0,0,0,0,0,0,1,0,0,1,0 },
-        {2,3,1,1,1,1,1,1,1,1,1,1,1,3,2 },
+        {2,1,1,1,1,1,1,1,1,1,3,1,1,1,2 },
         {0,2,0,0,0,0,0,2,0,0,0,0,0,2,0 }
     };
 
@@ -115,37 +114,32 @@ public class RoomCollection {
     private List<TileInfo[,]> roomList = new List<TileInfo[,]>();
 
     // Use this for initialization
-    public List<TileInfo[,]> GetList () {
-        if(roomList.Count < 1) { 
-        roomList.Add(ConvertMatrix(room1));
-        roomList.Add(ConvertMatrix(room2));
-        roomList.Add(ConvertMatrix(room3));
-        roomList.Add(ConvertMatrix(room4));
-        roomList.Add(ConvertMatrix(room5));
-        roomList.Add(ConvertMatrix(room6));
-        roomList.Add(ConvertMatrix(room7));
-            }
+    public List<TileInfo[,]> GetList() {
+        if (roomList.Count < 1) {
+            roomList.Add(ConvertMatrix(room1));
+            roomList.Add(ConvertMatrix(room2));
+            roomList.Add(ConvertMatrix(room3));
+            roomList.Add(ConvertMatrix(room4));
+            roomList.Add(ConvertMatrix(room5));
+            roomList.Add(ConvertMatrix(room6));
+            roomList.Add(ConvertMatrix(room7));
+        }
         return roomList;
     }
 
-    private TileInfo[,] ConvertMatrix(int[,] givenRoom)
-    {
-        TileInfo[,] converted = new TileInfo[10,15];
-        for (int i = 0; i < givenRoom.GetLength(0); i++)
-        {
-            for (int j = 0; j < givenRoom.GetLength(1); j++)
-            {
+    private TileInfo[,] ConvertMatrix(int[,] givenRoom) {
+        TileInfo[,] converted = new TileInfo[10, 15];
+        for (int i = 0; i < givenRoom.GetLength(0); i++) {
+            for (int j = 0; j < givenRoom.GetLength(1); j++) {
                 converted[i, j] = IntToTile(givenRoom[i, j]);
             }
         }
         return converted;
     }
 
-    private TileInfo IntToTile(int number)
-    {
+    private TileInfo IntToTile(int number) {
         TileInfo ret;
-        switch (number)
-        {
+        switch (number) {
             case 0:
                 ret = TileInfo.WALL;
                 break;

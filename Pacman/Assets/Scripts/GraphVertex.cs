@@ -2,22 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GraphVertex
-{
+public class GraphVertex {
     private readonly int _cost;
     public Vertex vertex;
-    public int Cost
-    {
+    public int Cost {
         get; set;
     }
 
-    public void IncrementCost()
-    {
+    public void IncrementCost() {
         Cost++;
     }
 
-    public void DecrementCost()
-    {
+    public void DecrementCost() {
         Cost--;
     }
 }

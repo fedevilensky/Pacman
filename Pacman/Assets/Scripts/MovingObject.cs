@@ -8,19 +8,16 @@ public abstract class MovingObject : MonoBehaviour {
 
     protected Rigidbody2D rb2D;
 
-	// Use this for initialization
-	protected virtual void Start () {
+    // Use this for initialization
+    protected virtual void Start() {
         rb2D = gameObject.GetComponent<Rigidbody2D>();
-	}
+    }
 
-    protected void Move(Vector2 movement)
-    {
-        if (!GameManager.instance.hasEnded)
-        {
-            rb2D.velocity = movement * movingSpeed*GameManager.instance.gameSpeed;
+    protected void Move(Vector2 movement) {
+        if (!GameManager.instance.hasEnded) {
+            rb2D.velocity = movement * movingSpeed * GameManager.instance.gameSpeed;
         }
-        else
-        {
+        else {
             rb2D.bodyType = RigidbodyType2D.Static;
         }
     }

@@ -9,25 +9,18 @@ public class KillCollision : MonoBehaviour {
 
     private Enemy enemy;
 
-    private void Awake()
-    {
+    private void Awake() {
         enemy = enemyObject.GetComponent<Enemy>();
     }
 
-    private void OnTriggerEnter2D(Collider2D coll)
-    {
+    private void OnTriggerEnter2D(Collider2D coll) {
 
-        if (!GameManager.instance.hasEnded)
-        {
-            if (coll.gameObject.tag == "Player")
-            {
-                if (GameManager.instance.playerHasGun)
-                {
+        if (!GameManager.instance.hasEnded) {
+            if (coll.gameObject.tag == "Player") {
+                if (GameManager.instance.playerHasGun) {
 
-                    GameManager.instance.enemyDead = true;
+                    enemy.isDead = true;
                 }
-
-                enemy.CollisionWithPlayer();
             }
         }
     }

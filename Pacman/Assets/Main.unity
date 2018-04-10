@@ -10587,7 +10587,7 @@ MonoBehaviour:
   borrarPrefab: {fileID: 1099317755554948, guid: d5b13ec1b17c46d45b497ca86ff2ed11,
     type: 2}
   player: {fileID: 0}
-  playerPrefab: {fileID: 1006664160284986, guid: c7078ab03b9689d4184883148d2f9b89,
+  playerPrefab: {fileID: 1450838967152524, guid: 46f3504a2ae69c94cbfb765f3630bfa9,
     type: 2}
   enemy: {fileID: 0}
   collectibles: []
@@ -10613,13 +10613,14 @@ MonoBehaviour:
   farPoint: {fileID: 900959425}
   loading: 0
   marginError: 0.1
-  gameSpeed: 2
+  gameSpeed: 1.25
   itemsCollected: 0
   enemyDead: 0
   respawnTime: 0
   myError: 
   waypointList: []
   boolMapPrint: 
+  totalItemQuantity: 4
 --- !u!4 &1890223925
 Transform:
   m_ObjectHideFlags: 0

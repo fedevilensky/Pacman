@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-public static class Graph
-{
+public static class Graph {
     //public int CountVertex { get; private set; }
     public static int CountArchs { get; private set; }
     private static int[,] adjacencyMatrix;
@@ -9,28 +8,22 @@ public static class Graph
     private static Hashtable inverseRepresentation = new Hashtable();
     public const int INF = -1;
 
-    public static void Reset(int size)
-    {
+    public static void Reset(int size) {
         adjacencyMatrix = new int[size, size];
-        for (int i = 0; i < adjacencyMatrix.GetLength(0); i++)
-        {
-            for (int j = 0; j < adjacencyMatrix.GetLength(1); j++)
-            {
+        for (int i = 0; i < adjacencyMatrix.GetLength(0); i++) {
+            for (int j = 0; j < adjacencyMatrix.GetLength(1); j++) {
                 adjacencyMatrix[i, j] = INF;
             }
         }
         CountArchs = 0;
 
     }
-    
-    public static void AddVertex(Vertex v)
-    {
-        if (!IsFull() && !internalRepresentation.Contains(v))
-        {
+
+    public static void AddVertex(Vertex v) {
+        if (!IsFull() && !internalRepresentation.Contains(v)) {
             int i = CountVertexes();
-            while (inverseRepresentation.Contains(i))
-            {
-                i = (i++) %adjacencyMatrix.GetLength(0);
+            while (inverseRepresentation.Contains(i)) {
+                i = (i++) % adjacencyMatrix.GetLength(0);
             }
             internalRepresentation.Add(v, i);
             inverseRepresentation.Add(i, v);
@@ -38,23 +31,18 @@ public static class Graph
         }
     }
 
-    public static void AddArch(Vertex to, Vertex from, int cost)
-    {
-        if (adjacencyMatrix[(int)internalRepresentation[to], (int)internalRepresentation[from]] == INF && adjacencyMatrix[(int)internalRepresentation[from], (int)internalRepresentation[to]] == INF)
-        {
+    public static void AddArch(Vertex to, Vertex from, int cost) {
+        if (adjacencyMatrix[(int)internalRepresentation[to], (int)internalRepresentation[from]] == INF && adjacencyMatrix[(int)internalRepresentation[from], (int)internalRepresentation[to]] == INF) {
             CountArchs++;
             adjacencyMatrix[(int)internalRepresentation[to], (int)internalRepresentation[from]] = cost;
             adjacencyMatrix[(int)internalRepresentation[from], (int)internalRepresentation[to]] = cost;
         }
     }
-    
-    public static void RemoveVertex(Vertex v)
-    {
-        if (internalRepresentation.Contains(v))
-        {
+
+    public static void RemoveVertex(Vertex v) {
+        if (internalRepresentation.Contains(v)) {
             int aux = (int)internalRepresentation[v];
-            for (int i = 0; i < adjacencyMatrix.GetLength(0); i++)
-            {
+            for (int i = 0; i < adjacencyMatrix.GetLength(0); i++) {
                 Vertex toCompare = (Vertex)inverseRepresentation[i];
                 RemoveArch(v, toCompare);
 
@@ -64,16 +52,13 @@ public static class Graph
 
         }
     }
-    
 
-    public static void RemoveArch(Vertex v1, Vertex v2)
-    {
-        if (v1.CompareTo(v2)==1 && internalRepresentation.Contains(v1) && internalRepresentation.Contains(v2))
-        {
+
+    public static void RemoveArch(Vertex v1, Vertex v2) {
+        if (v1.CompareTo(v2) == 1 && internalRepresentation.Contains(v1) && internalRepresentation.Contains(v2)) {
             int a = (int)internalRepresentation[v1];
             int b = (int)internalRepresentation[v2];
-            if (adjacencyMatrix[a, b] != INF && adjacencyMatrix[b,a]!=INF)
-            {
+            if (adjacencyMatrix[a, b] != INF && adjacencyMatrix[b, a] != INF) {
                 CountArchs--;
                 adjacencyMatrix[a, b] = INF;
                 adjacencyMatrix[b, a] = INF;
@@ -81,13 +66,10 @@ public static class Graph
         }
     }
 
-    public static IEnumerable<Vertex> GetEveryVertex()
-    {
+    public static IEnumerable<Vertex> GetEveryVertex() {
         List<Vertex> aux = new List<Vertex>();
-        for (int i = 0; i < CountVertexes(); i++)
-        {
-            if (inverseRepresentation.Contains(i))
-            {
+        for (int i = 0; i < CountVertexes(); i++) {
+            if (inverseRepresentation.Contains(i)) {
                 aux.Add((Vertex)inverseRepresentation[i]);
             }
         }
@@ -95,41 +77,34 @@ public static class Graph
         return aux;
     }
 
-    public static bool ContainsVertex(Vertex v)
-    {
+    public static bool ContainsVertex(Vertex v) {
         return internalRepresentation.Contains(v);
     }
 
-    public static int GetVertexPos(Vertex v)
-    {
+    public static int GetVertexPos(Vertex v) {
         if (internalRepresentation.Contains(v))
             return (int)internalRepresentation[v];
         else
             return INF;
     }
-    public static Vertex GetVertexPos(int i)
-    {
+    public static Vertex GetVertexPos(int i) {
         if (inverseRepresentation.Contains(i))
             return (Vertex)inverseRepresentation[i];
         else
             return null;
     }
 
-    public static int[,] GetAdjacencyMatrix()
-    {
+    public static int[,] GetAdjacencyMatrix() {
         return adjacencyMatrix;
     }
 
-    public static IEnumerable<Vertex> GetAdjacents(Vertex v)
-    {
+    public static IEnumerable<Vertex> GetAdjacents(Vertex v) {
         List<Vertex> aux = new List<Vertex>();
         int pos = (int)internalRepresentation[v];
 
 
-        for (int i = 0; i < adjacencyMatrix.GetLength(0); i++)
-        {
-            if (adjacencyMatrix[pos, i] != INF)
-            {
+        for (int i = 0; i < adjacencyMatrix.GetLength(0); i++) {
+            if (adjacencyMatrix[pos, i] != INF) {
                 Vertex adjVertex = (Vertex)inverseRepresentation[i];
                 aux.Add(adjVertex);
             }
@@ -138,15 +113,12 @@ public static class Graph
         return aux;
     }
 
-    public static int CountAdjacents(Vertex v)
-    {
+    public static int CountAdjacents(Vertex v) {
         int pos = (int)internalRepresentation[v];
         int count = 0;
 
-        for (int i = 0; i < adjacencyMatrix.GetLength(0); i++)
-        {
-            if (adjacencyMatrix[pos, i] != INF)
-            {
+        for (int i = 0; i < adjacencyMatrix.GetLength(0); i++) {
+            if (adjacencyMatrix[pos, i] != INF) {
                 count++;
             }
         }
@@ -154,18 +126,15 @@ public static class Graph
     }
 
 
-    public static bool IsFull()
-    {
+    public static bool IsFull() {
         return CountVertexes() == adjacencyMatrix.Length;
     }
 
-    public static int CountVertexes()
-    {
+    public static int CountVertexes() {
         return internalRepresentation.Count;
     }
 
-    public static int CountArches()
-    {
+    public static int CountArches() {
         return CountArchs;
     }
 }
